@@ -1,0 +1,1 @@
+print(input().replace("A","t").replace("O","A").replace("t","O"))
