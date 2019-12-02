@@ -106,9 +106,7 @@ public:
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int a,b,c;
-    cin >>a >>b;
-    BigCombination BC;
-    BC.combination();
+    int N = -10;
+    cout << abs(N)*3 << endl;
 
 }

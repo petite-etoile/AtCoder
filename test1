@@ -1,0 +1,273 @@
+for a in az:
+    b = (a.tray_id,a.stand_id)
+    base.add(b)
+    width += a.width
+
+    # 下の棚段から、棚グループごとにフェイス数を増やすかどうか検証している
+
+    if a.over == 1:
+        already_increased_syohin = set() ##一度増やした商品は何度も増やしたくない 商品情報はJANコードのみ入れる
+
+
+        ####################################
+        ##前期におけるカテゴリごとの横幅を算出###
+        ##################################
+
+        # print("-----------------------------")
+        # print("base,width",base,width) ##今回の棚グループの[棚段, 台番号] 限界の幅
+        last_syohin = []
+        ct_uniq = set()
+        # print("-----------------------------")
+        # print("前期のカテゴリごとの幅計算")
+        for lr in last_result_ori:##[台番号, 棚段番号, 棚位置, 容量, カテゴリ, 小分類, メーカー, 幅, JANコード, 高さ, 回転, 積上, 奥行]
+            p = (lr[1],lr[0]) #tray, stand
+            if p in base:
+                last_syohin.append(lr)
+                l = [lr[3],lr[4]] #capa, cate
+                ct_uniq.add(tuple(l))
+
+        # print("last_syohin",last_syohin) ##その棚グループに配置されている商品
+        # print("ct_uniq",ct_uniq) ##その棚グループに存在するカテゴリ
+
+        face_sum_groupby_category_last = defaultdict(int) #カテゴリごとのフェイス数合計(今期もこのフェイス数は保持したい)
+
+        # 前はここで前期の幅を求めていたが、フェイス数に変更  8/14修正ポイントD
+        for _,_,_,capacity,category,_,_,wide,*_  in last_syohin:  ##last_syohin[台番号, 棚段番号, 棚位置, 容量, カテゴリ, 小分類, メーカー, 幅, JANコード, 高さ, 回転, 積上, 奥行]
+            key = (capacity,category)
+            if key  in ct_uniq:
+                # width_groupby_category_last[key]+=wide
+                face_sum_groupby_category_last[key] += 1 #カテゴリごとのフェイス数を求める
+
+        # last = [(capacity, category, wide)  for (capacity,category),wide in width_groupby_category.items()]
+        # print("last",last) ##容量、カテゴリ、横幅
+
+        now_sum = 0
+        sa = width - now_sum
+        min_width = 250 ##暫定 8/13
+        # print("sa min_width",sa,min_width)
+
+        # print("カテゴリごとのフェイス数担保")
+        while sa > min_width:
+            while(sa > min_width): ##並べられる限界の幅と、今実際に並んでいる商品の幅合計を比較した差分が、一番幅の狭い商品の幅よりも広いなら、商品置きましょう
+                append_syohin_set = set() #このループで何も追加しなかったら次のループは行わずにbreakする
+
+                renew = 0
+
+                # print("実際にどれだけ埋められているか計算")
+                now = []
+                now_sum = 0
+                syohin = [] #
+                # syohin_result := ['台番号', '棚段番号', '棚位置', '商品コード', 'フェース数', 'フェース面', 'フェース回転', '積上陳列数', '在庫数量']
+
+                face_sum_groupby_category_now = defaultdict(int)
+                for s, line in enumerate(syohin_result):
+                    # print(s,line)
+                    p = ( int(line[1]), int(line[0]) )
+                    if p in base:
+                        category_width = 0
+                        for r in new_syohin: #new_syohin:[容量, カテゴリ, 小分類, メーカー, 幅, JANコード, 高さ, 奥行, 売上, 優先度, フェイス数]
+                            if (line[3]) == r[5]: #JAN
+                                if line[6] in (1,3): #横づみなら幅を高さで計算 8/13
+                                    real_width = r[6]
+                                    # print(r[10])
+                                else:
+                                    real_width = r[4]
+                                # print(p,r, "..................",real_width,r[10],real_width*r[10]) #幅、フェイス数、幅かけるフェイス数
+                                now_sum += real_width * r[10] #幅 * フェイス数
+                                # width_sum_groupby_category_now[(r[0],r[1])] += r[4] * r[10]
+                                face_sum_groupby_category_now[(r[0],r[1])] += r[-1] #face数
+                                syohin.append(r)
+                                if min_width > real_width:
+                                    min_width = real_width
+                                break
+                # now = [[capa, cate, wide] for (capa,cate), wide in width_sum_groupby_category_for_listnow.items() ]
+                # print("syohin",*syohin,sep="\n")
+                # syohin := [容量, カテゴリ, 小分類, メーカー, 幅, JANコード, 高さ, 奥行, 売上, 優先度, フェイス数]
+
+                # print("now nowsum",now,now_sum) ##容量、カテゴリ、横幅
+                sa = width - now_sum
+                # print("sa min_width",sa,min_width)
+                count = 0
+
+                if now_sum == 0: ##何にも商品並んでないならbreak
+                    break
+
+                if width - now_sum > min_width:
+                    for c in ct_uniq: ##カテゴリごとにフェイス数が達するまで処理
+                        up_syohin = []
+                        # print(len(last), len(now), c)
+                        # print("カテゴリ:",c)
+                        face_diff = face_sum_groupby_category_last[c] - face_sum_groupby_category_now[c]
+                        # print("実際と前期のface数差",face_diff)
+                        for l in syohin:
+                            # print(l)
+                            if tuple(l[:2]) == c :
+                                # print("#############")
+                                # if last[c][0] == l[0] and last[c][1] == l[1] and int(l[4]) <= int(ll):
+                                up_syohin.append(l)
+
+                        if len(up_syohin) > 0: ##up_syohin=増やせる横幅の商品のうち、優先度高い順
+                            # print("up_syohin",*up_syohin,sep="\n")
+                            # print("up_syohin",[x[9] for x in up_syohin])
+                            up_syohin.sort(key=itemgetter(9)) #優先度順
+                            # p#print(up_syohin)
+
+
+                            for u in range(len(up_syohin)): ##優先度が高いやつから、カテゴリごとの横幅が前期と同じになるまで増やす
+                                for s in range(len(syohin_result)):
+                                    JAN = syohin_result[s][3]
+                                    if JAN in already_increased_syohin:
+                                        # print("すでに１度増やした商品です。SKIP!!",syohin_result[s])
+                                        # print("error!!!!!!!!!!!!!!,仕様上入らないはずのif文です(おそらく) -> 小野へ投げてください")
+                                        break
+
+                                    line = syohin_result[s]
+                                    if face_sum_groupby_category_last[c] <= face_sum_groupby_category_now[c]:
+                                        if face_sum_groupby_category_last[c] < face_sum_groupby_category_now[c]:
+                                            pass
+                                            # print("前期より今期のほうがカテゴリ内フェイス数合計が多くなっています！！")
+                                            # print("カテゴリ:",c)
+                                        break
+
+                                    if up_syohin[u][5] == (line[3]): #up_syohin[容量, カテゴリ, 小分類, メーカー, 幅, JANコード, 高さ, 奥行, 売上, 優先度, フェイス数]
+                                        # syohin_result := ['台番号', '棚段番号', '棚位置', 'JANコード', 'フェース数', 'フェース面', 'フェース回転', '積上陳列数', '在庫数量']
+                                        # print("この商品を追加します", line)
+                                        count += 1
+                                        face = int(line[4])+1
+                                        # print(face)
+                                        syohin_result[s][4] = int(face)
+                                        new_face[str(up_syohin[u][5])] = int(face)
+                                        # print("この商品を追加しました", syohin_result[s])
+
+                                        append_syohin_set.add(JAN) #already_increased_syohin.add(JAN)
+                                        if line[6] in (1,3): #横づみ
+                                            up_width = up_syohin[u][6]
+                                        else:
+                                            up_width = up_syohin[u][4]
+                                        now_sum += up_width
+                                        # width_sum_groupby_category_now[c] += up_syohin[u][4]
+                                        face_sum_groupby_category_now[c] += 1
+                                        # sa_ct =  width_groupby_category_last[c] - width_sum_groupby_category_now[c] #last[c][2] - now[c][2]
+                                        # print("前期と今期の横幅",width_groupby_category_last[c] ,width_sum_groupby_category_now[c],sa_ct)
+                                        sa = width - now_sum
+
+                                        for l in syohin:
+                                            if l[5] == (line[3]):
+                                                l[10] += 1
+
+                                    if sa < min_width:
+                                        break
+                                if sa < min_width:
+                                    break
+
+                                if face_sum_groupby_category_last[c] <= face_sum_groupby_category_now[c]:
+                                    break
+                    if not append_syohin_set:
+                        break #商品を追加しなかったらbreakして次のwhileへ
+                already_increased_syohin |= append_syohin_set
+                if len(already_increased_syohin) == len(syohin):
+                    already_increased_syohin = set()
+                # ----------ここまででカテゴリ毎のフェイス数合計を担保する----------------
+                # print("すでにフェイス数を増やした商品",already_increased_syohin)
+
+            # print("余ったスペース活用")
+            # ----------ここから余ったスペースに追加していく------------------------
+            while sa >= min_width: #ここも同じように
+                if len(already_increased_syohin) == len(syohin):  ##すべての商品を１回ずつ増やしたあとはどの商品を増やしてもいい
+                    already_increased_syohin = set()
+                # syohin[容量, カテゴリ, 小分類, メーカー, 幅, JANコード, 高さ, 奥行, 売上, 優先度, フェイス数]
+                # syohin_result := ['台番号', '棚段番号', '棚位置', 'JANコード', 'フェース数', 'フェース面', 'フェース回転', '積上陳列数', '在庫数量']
+                updated = False
+                syohin.sort(key=itemgetter(8), reverse=True) ##売上が棚グループで一番高いものから
+                for l in syohin:
+                    for s in syohin_result:
+                        if l[5] == s[3]: #lとsが同じ商品
+                            if s[6] in (1,3): #横づみ
+                                s_width = l[6]
+                            else:
+                                s_width = l[4]
+                            if s_width <= sa:
+                                # for s in range(len(syohin_result)):
+                                    # line = syohin_result[s] == s
+                                JAN = s[3]
+                                if JAN in already_increased_syohin:
+                                    # print("すでに１度増やした商品です。SKIP!!", s)
+                                    break
+                                if l[5] == (s[3]):
+                                    # print("どこも無理で埋めた商品",s)
+                                    face = int(s[4])+1
+                                    # print(face)
+                                    s[4] = int(face)
+                                    new_face[str(l[5])] = int(face)
+                                    # print("埋めた商品", s)
+                                    now_sum += s_width
+                                    count += 1
+                                    l[10] += 1
+                                    already_increased_syohin.add(JAN)
+                                    sa = width - now_sum
+                                    # print("残りのスペース：",sa)
+                                    updated = True
+                                if sa < min_width:
+                                    break
+                            if sa < min_width:
+                                break
+                if not updated:
+                    # print("更新がなかったのでwhile文から抜けました")
+                    break
+                already_increased_syohin = set()  ##一番細い商品は入るけど売上のたかい細めの商品が入らない -> 無限ループ  を避けたい (ならもうalready_いらなさそうだけど)
+
+
+                sa = width - now_sum
+                # print("sa",sa,width,now_sum,min_width)
+                # print("LLLLLL",l)
+                # print("###",syohin[-1])
+
+            renew = 0
+            # syohin[容量, カテゴリ, 小分類, メーカー, 幅, JANコード, 高さ, 奥行, 売上, 優先度, フェイス数]
+            # syohin_result := ['台番号', '棚段番号', '棚位置', 'JANコード', 'フェース数', 'フェース面', 'フェース回転', '積上陳列数', '在庫数量']
+            # print("余ったスペースは",sa,"です。(負の場合は削ります)")
+            if sa < 0: ##増やしすぎたので、売上が一番低いやつを減らす
+                renew = 1
+                syohin.sort(key=itemgetter(8))
+                # print("reverse_syohin",syohin)
+                for ss in range(len(syohin)):
+                    if syohin[ss][10] > 2:
+                        syohin[ss][10] -= 1
+                    for s in range(len(syohin_result)):
+                        line = syohin_result[s]
+                        JAN = line[3]
+                        # print("JAN",line[3])
+                        if syohin[ss][5] == (line[3]):
+                            # print("カットした商品",line,file=sys.stderr)
+                            face = int(line[4])-1
+                            # print(face)
+                            #print("l",l)######################################
+                            JAN = str(line[3])
+                            # print("JAN_____",JAN)
+                            syohin_result[s][4] = int(face)
+                            new_face[JAN] = int(face)
+                            # print("カット商品", syohin_result[s])
+                            if syohin_result[s][6] in (1,3): #横づみ
+                                s_width = syohin[ss][6]
+                            else:
+                                s_width = syohin[ss][4]
+                            now_sum -= s_width
+                            count += 1
+                            sa = width - now_sum
+                            # print("renew_sa",sa,width,now_sum,min_width)
+                            renew = 1
+                    if sa > 0:
+                        break
+                if renew == 1 and sa > 0:
+                    break
+
+            # print("この棚のSKU数:",len(syohin))
+            already_increased_syohin=set()
+
+            if not syohin:
+                # print("\n\n\nこの棚におく商品がありません(良くない)\n\n\n ")
+                break
+
+        space_informations.append((base, sa))
+        base = set()
+        width = 0
