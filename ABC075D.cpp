@@ -14,7 +14,7 @@ using namespace std;
 using P = pair<ll, ll>;
 typedef vector<int> vi;
 const int MOD = (int)1e9 + 7;
-const ll INF = 1LL << 60;
+const ll INF = 1LL << 62;
 const int inf = 1<<30;
 template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
 template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
@@ -35,9 +35,12 @@ ostream& operator<<(ostream& os, vector<T> &V){
 }
 template <typename T>
 ostream& operator<<(ostream& os, pair<T,T> const&P){
+    os << "(";
     os << P.first;
     os << " ";
     os << P.second;
+    os << ")";
+
     return os;
 }
 template <typename T>
@@ -61,25 +64,47 @@ ostream& operator<<(ostream& os, deque<T> &q){
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
-ll gcd(ll a, ll b){
-    if(b==0) return a;
-    return gcd(b,a%b);
-}
-ll lcm(ll n, ll m){
-    return n * (m / gcd(n, m));
-}
+//fixed<<setprecision(10)<<ans<<endl;
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
-    vi A(N);
-    REP(i,N){
-        cin >> A[i];
+    int N,K;
+    cin >> N >> K;
+    vector<pair<ll,ll>> A;
+    ll a,b;
+    REP(i,N) cin >> a >> b, A.emplace_back(a,b);
+    sort(ALL(A));
+    
+    ll ans=INF;
+    ll x,y;
+    for(int i=0;i<N;i++){
+        for(int j=i+K-1;j<N;j++){
+            // cout << "i:" << i << " j:" << j << "-----------"<<endl;
+            vector<pair<ll,ll>> B;
+            for(int k=i;k<=j;k++){
+                B.emplace_back(A[k].second,A[k].first);
+            }
+            sort(ALL(B));
+            // cout << "::::" << (A[j].first-A[i].first)*(B[K-1].first-B[0].first) << endl;
+            // debug(j-i-K)
+            for(int l=0;l<=j-i-K+1;l++){
+                int r = l+K-1;
+                ll bot=INF,top=-INF;
+                REP(idx,K){
+                    chmin(bot, B[l+idx].second);
+                    chmax(top, B[l+idx].second);
+                }
+                // debug(j)
+                // debug(B)
+                // debug((top-bot)*(B[l+K-1].first-B[l].first))
+                // cout << l << " " << K << endl;
+                // cout << top << " " << bot << " (" << B[l+K-1].first <<","<< l+K-1 << ") " << B[l].first << endl;
+                chmin(ans, (top-bot)*(B[l+K-1].first-B[l].first));
+            }
+            // cout << B;
+        }
     }
-    ll ans=0;
-    REP(i,N){
-        ans += A[i]-1;
-    }
+    // debug(INF)
+
     cout << ans << endl;
 }

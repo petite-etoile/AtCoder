@@ -162,12 +162,14 @@ int main(){
     ios::sync_with_stdio(false);
     int H,W,A,B;
     cin >> H>>W>>A>>B;
-
+    BigCombination BC;
     mint ans=0;
-    int h=H-A, w=B;
+    int h=H-A-1, w=B;
     while(h>=0 && w<W){
-
-        h--,w++;
+        cout << h << " "<< w << endl;
+        ans += BC.combination(h+w,h) * BC.combination(H-h+W-w-2,H-h-1);
+        debug(BC.combination(h+w,h) * BC.combination(H-h+W-w-2,H-h-1))
+        h--, w++;
     }
 
 

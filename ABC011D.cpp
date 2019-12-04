@@ -61,25 +61,21 @@ ostream& operator<<(ostream& os, deque<T> &q){
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
-ll gcd(ll a, ll b){
-    if(b==0) return a;
-    return gcd(b,a%b);
-}
-ll lcm(ll n, ll m){
-    return n * (m / gcd(n, m));
-}
+//fixed<<setprecision(10)<<ans<<endl;
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
-    vi A(N);
-    REP(i,N){
-        cin >> A[i];
+    int N,D;
+    int X,Y;
+    cin >> N>>D>>X>>Y;
+    if (X%D || Y%D){
+        cout << 0 << endl;
+        exit(0);
     }
-    ll ans=0;
-    REP(i,N){
-        ans += A[i]-1;
-    }
+
+    long double ans=0;
+
+
+
     cout << ans << endl;
 }

@@ -61,25 +61,40 @@ ostream& operator<<(ostream& os, deque<T> &q){
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
-ll gcd(ll a, ll b){
-    if(b==0) return a;
-    return gcd(b,a%b);
+bool bfs(vector<vi>& edges){
+    int N=edges.size();
+    queue<int> q;
+    q.push(0);
+    REP(i,2){
+        queue<int> tmp;
+        while(!q.empty()){
+            int u = q.front(); q.pop();
+            for(auto v:edges[u]){
+                tmp.push(v);
+                if (v==N-1) return true;
+            }
+        }
+        q = tmp;
+    }
+    return false;
+    
 }
-ll lcm(ll n, ll m){
-    return n * (m / gcd(n, m));
-}
+//fixed<<setprecision(10)<<ans<<endl;
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
-    vi A(N);
-    REP(i,N){
-        cin >> A[i];
+    int N,M;
+    cin >> N >> M;
+    vector<vi> edges(N);
+    REP(i,M){
+        int a,b;
+        cin >> a >> b;
+        a--;b--;
+        edges[a].push_back(b);
+        edges[b].push_back(a);
     }
-    ll ans=0;
-    REP(i,N){
-        ans += A[i]-1;
-    }
-    cout << ans << endl;
+    
+    bool ok = bfs(edges);
+    if(ok) cout <<"POSSIBLE\n";
+    else cout << "IMPOSSIBLE\n";
 }
