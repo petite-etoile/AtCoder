@@ -12,7 +12,7 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-from math import floor,sqrt,factorial,log #log2ないｙｐ
+from math import floor,ceil,sqrt,factorial,log #log2ないｙｐ
 from heapq import heappop, heappush, heappushpop
 from collections import Counter,defaultdict,deque
 from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
@@ -37,6 +37,31 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    N=I()
+    S=[list(sorted(ST()))[::-1] for _ in range(N)]
+    ans=""
+    for i in range(len(S[0])):
+        s = S[0].pop()
+        ok = True
+        for T in S[1:]:
+            if not T:
+                ok = False
+                break
+            t = T[-1]
+            while t<s:
+                T.pop()
+                t = T[-1]
+                if t>=s:
+                    break
+            if t!=s:
+                ok = False
+                break
+            else:
+                T.pop()
+        if ok:
+            ans+=s
+    print(ans)
+
+
 if __name__ == '__main__':
     main()

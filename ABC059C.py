@@ -36,63 +36,23 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
-#Binary Indexed Tree (1-index！！！！！！！！)
-class BinaryIndexedTree():
-    def __init__(self, size):
-        self.__node=[0]*(size+1)
-        self.size = size
 
-    #node[index]にvalueを足して、BITを更新
-    def add(self, index, value):
-        while index <= self.size:
-            self.__node[index] += value
-            index += index&-index    
-    
-    #indexまでの和を返す
-    def sum(self, index):
-        ret = 0 #零元・単位元
-        while index > 0:
-            ret += self.__node[index]
-            index -= index&-index    
-        return ret
-
-    def update_max(self, index, value):
-        while index <= self.size:
-            self.__node[index] = max(self.__node[index], value)
-            index += index & -index
-
-
-    #indexまでの最大値を返す
-    def query_max(self, index):
-        ret = 0
-        while index > 0:
-            ret = max(ret, self.__node[index])
-            index -= index & -index
-        return ret
-        
-        
-
-    #0-indexでの添字を受け取って、1-indexでの添字での値を返す
-    def get_node(self, index):
-        return self.__node[index]
 def main():
     N=I()
     A=LI()
     def solve(is_minus):
-        B=BinaryIndexedTree(N)
-        for i,a in enumerate(A,start=1):
-            B.add(i,a)
+        now = 0
         res = 0
-        for i in range(1,N+1):
-            s = B.sum(i)
+        for a in A:
+            now += a
             if is_minus:#累積和が負でないといけない
-                if s>=0:#負じゃない
-                    res += abs(s-(-1))
-                    B.add(i,(-1-s))
+                if now >= 0:#負じゃない
+                    res += abs(now-(-1))
+                    now = -1
             else:#累積和が負でないといけない
-                if s<=0:#負じゃない
-                    res += abs(s-1)
-                    B.add(i,abs(s-1))
+                if now <= 0:#負じゃない
+                    res += abs(now-1)
+                    now = 1
             is_minus ^= 1 #true/falseを反転
         return res
 

@@ -61,37 +61,36 @@ ostream& operator<<(ostream& os, deque<T> &q){
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
-double Cx,Cy,Dx,Dy;
-double A1,B1;
-double square(double a,double b,double c,double d,double e,double f){
-    cout << a << " " << b << " " << c << " " << d << " " << e << " " << f << "############################" << (a*d + c*f + e*b -(b*c + d*e + f*a))/2.0<< endl;
-
-    return (a*d + c*f + e*b -(b*c + d*e + f*a))/2.0;
-}
-int judge(double x,double y,double pre_x,double pre_y){
-  cout<<"A\n";
-  return (square(x,y,pre_x,pre_y,Cx,Cy)*square(x,y,pre_x,pre_y,Dx,Dy)<0) && (square(x,y,Cx,Cy,Dx,Dy)*square(pre_x,pre_y,Cx,Cy,Dx,Dy)<0);
-}
+//fixed<<setprecision(10)<<ans<<endl;
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    cin >> Cx>>Cy>>Dx>>Dy;
     int N;
     cin >> N;
-    double pre_x,pre_y;
-    int x,y,cnt=0;
-
+    vi S(N);
+    REP(i,N) cin >> S[i];
+    
+    int ans=-inf;
+    int chokudai_score;
     REP(i,N){
-        cin >> x >> y;
-        if(i){
-            cnt+=judge(x,y,pre_x,pre_y);
+        int aoki_max = -inf;
+        int aokindex = -1;
+        REP(j,N){
+            if(i==j) continue;
+            int aoki = 0;
+            int l=min(i,j), r=max(i,j);
+            int chokudai=0;
+            REP(k,r-l+1){
+                if(k&1) aoki+=S[l+k];
+                else chokudai+=S[l+k];
+            }
+            if(chmax(aoki_max, aoki)) {
+                aokindex=j;
+                chokudai_score=chokudai;
+            }
         }
-        pre_x=x,pre_y=y;
+        chmax(ans,chokudai_score);
     }
-    cnt = (cnt+1)/2;
-    int ans=1+cnt;
-
-
 
 
     cout << ans << endl;

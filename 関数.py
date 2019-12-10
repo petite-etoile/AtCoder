@@ -270,7 +270,7 @@ H, W=map(int, input().split())
 grid=[["#"] * (W + 2)] + [list("#" + input() + "#")
                             for i in range(H)] + [["#"]*(W+2)]
 
-for i in range(h + w + 3):
+for i in range(h * w + 3):
     tmp=deque()
     while stack:
         h, w=stack.pop()
@@ -408,34 +408,34 @@ else:
 
 
 #トポロジカルソート
-    N,M = MI()
-    edge = [[]for _ in range(N)]
-    indegree = [0]*N #入次数
-    for _ in range(M):
-        a,b = MI()
-        edge[a].append(b)
-        indegree[b] += 1
-    #print(indegree)
-    #入次数が0の点からあれしていく
-    queue = deque() 
-    for i,x in enumerate(indegree):
-        if not x:
-            queue.append(i)
+N,M = MI()
+edge = [[]for _ in range(N)]
+indegree = [0]*N #入次数
+for _ in range(M):
+    a,b = MI()
+    edge[a].append(b)
+    indegree[b] += 1
+#print(indegree)
+#入次数が0の点からあれしていく
+queue = deque() 
+for i,x in enumerate(indegree):
+    if not x:
+        queue.append(i)
 
-    pop = queue.popleft
-    topological_index = [] #トポロジカルソート順
-    while queue:
-        v = pop()
-        topological_index.append(v)
+pop = queue.popleft
+topological_index = [] #トポロジカルソート順
+while queue:
+    v = pop()
+    topological_index.append(v)
 
-        for to in edge[v]:
-            indegree[to] -= 1
-            if not indegree[to]:
-                queue.append(to)
-    if tuple(1 for i in indegree if i!=0):
-        print("loop")
+    for to in edge[v]:
+        indegree[to] -= 1
+        if not indegree[to]:
+            queue.append(to)
+if tuple(1 for i in indegree if i!=0):
+    print("loop")
 
-    print(*topological_index,sep="\n")
+print(*topological_index,sep="\n")
 
 
 
@@ -611,45 +611,44 @@ class ModInt:
 ###########################################################################
 
 #Binary Indexed Tree (1-indexなので注意！！！！！！！！)
-    #Binary Indexed Tree (1-index！！！！！！！！)
-    class BinaryIndexedTree():
-        def __init__(self, size):
-            self.__node=[0]*(size+1)
-            self.size = size
+class BinaryIndexedTree():
+    def __init__(self, size):
+        self.__node=[0]*(size+1)
+        self.size = size
 
-        #node[index]にvalueを足して、BITを更新
-        def add(self, index, value):
-            while index <= self.size:
-                self.__node[index] += value
-                index += index&-index    
+    #node[index]にvalueを足して、BITを更新
+    def add(self, index, value):
+        while index <= self.size:
+            self.__node[index] += value
+            index += index&-index    
+    
+    #indexまでの和を返す
+    def sum(self, index):
+        ret = 0 #零元・単位元
+        while index > 0:
+            ret += self.__node[index]
+            index -= index&-index    
+        return ret
+
+    def update_max(self, index, value):
+        while index <= self.size:
+            self.__node[index] = max(self.__node[index], value)
+            index += index & -index
+
+
+    #indexまでの最大値を返す
+    def query_max(self, index):
+        ret = 0
+        while index > 0:
+            ret = max(ret, self.__node[index])
+            index -= index & -index
+        return ret
         
-        #indexまでの和を返す
-        def sum(self, index):
-            ret = 0 #零元・単位元
-            while index > 0:
-                ret += self.__node[index]
-                index -= index&-index    
-            return ret
+        
 
-        def update_max(self, index, value):
-            while index <= self.size:
-                self.__node[index] = max(self.__node[index], value)
-                index += index & -index
-
-
-        #indexまでの最大値を返す
-        def query_max(self, index):
-            ret = 0
-            while index > 0:
-                ret = max(ret, self.__node[index])
-                index -= index & -index
-            return ret
-            
-            
-
-        #0-indexでの添字を受け取って、1-indexでの添字での値を返す
-        def get_node(self, index):
-            return self.__node[index]
+    #0-indexでの添字を受け取って、1-indexでの添字での値を返す
+    def get_node(self, index):
+        return self.__node[index]
 
 
 #########################################################################

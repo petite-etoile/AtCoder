@@ -12,10 +12,10 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-from math import floor,sqrt,factorial,log #log2ないｙｐ
+from math import floor,ceil,sqrt,factorial,log #log2ないｙｐ
 from heapq import heappop, heappush, heappushpop
 from collections import Counter,defaultdict,deque
-from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
+from itertools import accumulate,permutations,combinations,product,combinations_with_replacement,groupby
 from bisect import bisect_left,bisect_right
 from copy import deepcopy
 inf=float('inf')
@@ -37,6 +37,11 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    S=ST()
+    G=groupby(S)
+    ans = -1
+    for i in G:
+        ans+=1
+    print(ans)
 if __name__ == '__main__':
     main()

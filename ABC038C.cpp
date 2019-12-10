@@ -61,38 +61,26 @@ ostream& operator<<(ostream& os, deque<T> &q){
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
-double Cx,Cy,Dx,Dy;
-double A1,B1;
-double square(double a,double b,double c,double d,double e,double f){
-    cout << a << " " << b << " " << c << " " << d << " " << e << " " << f << "############################" << (a*d + c*f + e*b -(b*c + d*e + f*a))/2.0<< endl;
-
-    return (a*d + c*f + e*b -(b*c + d*e + f*a))/2.0;
-}
-int judge(double x,double y,double pre_x,double pre_y){
-  cout<<"A\n";
-  return (square(x,y,pre_x,pre_y,Cx,Cy)*square(x,y,pre_x,pre_y,Dx,Dy)<0) && (square(x,y,Cx,Cy,Dx,Dy)*square(pre_x,pre_y,Cx,Cy,Dx,Dy)<0);
-}
+//fixed<<setprecision(10)<<ans<<endl;
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    cin >> Cx>>Cy>>Dx>>Dy;
     int N;
     cin >> N;
-    double pre_x,pre_y;
-    int x,y,cnt=0;
+    vi A(N);
+    REP(i,N) cin >> A[i];
 
-    REP(i,N){
-        cin >> x >> y;
-        if(i){
-            cnt+=judge(x,y,pre_x,pre_y);
+    ll ans=0;
+    int left = 0;
+    REP(right,N){
+        if (right==0){
+            ans++;
+            continue;
         }
-        pre_x=x,pre_y=y;
+        if(A[right-1]>=A[right]){
+            left = right;
+        }
+        ans += right-left+1;
     }
-    cnt = (cnt+1)/2;
-    int ans=1+cnt;
-
-
-
-
     cout << ans << endl;
 }

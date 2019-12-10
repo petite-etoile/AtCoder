@@ -35,9 +35,11 @@ ostream& operator<<(ostream& os, vector<T> &V){
 }
 template <typename T>
 ostream& operator<<(ostream& os, pair<T,T> const&P){
+    os << "(";
     os << P.first;
-    os << " ";
+    os << ",";
     os << P.second;
+    os << ")";
     return os;
 }
 template <typename T>
@@ -61,30 +63,27 @@ ostream& operator<<(ostream& os, deque<T> &q){
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
-double Cx,Cy,Dx,Dy;
-double A1,B1;
-double square(double a,double b,double c,double d,double e,double f){
-    cout << a << " " << b << " " << c << " " << d << " " << e << " " << f << "############################" << (a*d + c*f + e*b -(b*c + d*e + f*a))/2.0<< endl;
-
+//符号付き面積
+double signed_triangle_area(double a,double b,double c,double d,double e,double f){
     return (a*d + c*f + e*b -(b*c + d*e + f*a))/2.0;
 }
-int judge(double x,double y,double pre_x,double pre_y){
-  cout<<"A\n";
-  return (square(x,y,pre_x,pre_y,Cx,Cy)*square(x,y,pre_x,pre_y,Dx,Dy)<0) && (square(x,y,Cx,Cy,Dx,Dy)*square(pre_x,pre_y,Cx,Cy,Dx,Dy)<0);
+//交差判定
+int judge(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4){
+    return (signed_triangle_area(x1,y1,x2,y2,x3,y3)*signed_triangle_area(x1,y1,x2,y2,x4,y4)<0) && (signed_triangle_area(x3,y3,x4,y4,x1,y1)*signed_triangle_area(x3,y3,x4,y4,x2,y2)<0);
 }
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    cin >> Cx>>Cy>>Dx>>Dy;
+    int Ax,Ay,Bx,By;
+    cin >> Ax>>Ay>>Bx>>By;
     int N;
     cin >> N;
     double pre_x,pre_y;
     int x,y,cnt=0;
-
     REP(i,N){
         cin >> x >> y;
         if(i){
-            cnt+=judge(x,y,pre_x,pre_y);
+            cnt+=judge(x,y,pre_x,pre_y,Ax,Ay,Bx,By);
         }
         pre_x=x,pre_y=y;
     }

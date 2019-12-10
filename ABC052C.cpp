@@ -61,37 +61,89 @@ ostream& operator<<(ostream& os, deque<T> &q){
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
-double Cx,Cy,Dx,Dy;
-double A1,B1;
-double square(double a,double b,double c,double d,double e,double f){
-    cout << a << " " << b << " " << c << " " << d << " " << e << " " << f << "############################" << (a*d + c*f + e*b -(b*c + d*e + f*a))/2.0<< endl;
 
-    return (a*d + c*f + e*b -(b*c + d*e + f*a))/2.0;
+
+//mint
+struct mint {
+    ll x;
+    mint(ll x=0):x((x+2*MOD)%MOD){}
+    mint& operator+=(const mint a) {
+        if ((x += a.x) >= MOD) x -= MOD;
+        return *this;
+    }
+    mint& operator-=(const mint a) {
+        if ((x += MOD-a.x) >= MOD) x -= MOD;
+        return *this;
+    }
+    mint& operator*=(const mint a) {
+        (x *= a.x) %= MOD;
+        return *this;
+    }
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res+=a;
+    }
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res-=a;
+    }
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res*=a;
+    }
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t>>1);
+        a *= a;
+        if (t&1) a *= *this;
+        return a;
+    }
+
+    // for prime MOD
+    mint inv() const {
+        return pow(MOD-2);
+    }
+    mint& operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res/=a;
+    }
+};
+ostream& operator<<(ostream& os, mint a){
+    os << a.x;
+    return os;
 }
-int judge(double x,double y,double pre_x,double pre_y){
-  cout<<"A\n";
-  return (square(x,y,pre_x,pre_y,Cx,Cy)*square(x,y,pre_x,pre_y,Dx,Dy)<0) && (square(x,y,Cx,Cy,Dx,Dy)*square(pre_x,pre_y,Cx,Cy,Dx,Dy)<0);
+//素因数分解
+vector<ll> prime_factorization(ll n){
+    ll copy = n;
+    vector<ll> res;
+    for(ll i=2;i*i<=copy;i++){
+        while(n%i==0){
+            res.push_back(i);
+            n/=i;
+        }
+    }
+    if(n!=1) res.push_back(n);
+    return res;
 }
+//fixed<<setprecision(10)<<ans<<endl;
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    cin >> Cx>>Cy>>Dx>>Dy;
     int N;
     cin >> N;
-    double pre_x,pre_y;
-    int x,y,cnt=0;
-
-    REP(i,N){
-        cin >> x >> y;
-        if(i){
-            cnt+=judge(x,y,pre_x,pre_y);
-        }
-        pre_x=x,pre_y=y;
+    map<ll,ll> M;
+    for(int i=2;i<=N;i++){
+        auto p = prime_factorization(i);
+        for(auto x:p) M[x]++;
     }
-    cnt = (cnt+1)/2;
-    int ans=1+cnt;
 
-
+    mint ans=1;
+    for(auto m:M){
+        ans *= m.second+1;
+    }
 
 
     cout << ans << endl;
