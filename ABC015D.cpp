@@ -57,15 +57,56 @@ ostream& operator<<(ostream& os, deque<T> &q){
         os<<*it;
         os<<" ";
     }
-    os<<endl;
+     os<<endl;
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
-//fixed<<setprecision(10)<<ans<<endl;
+vector<vector<ll>> binary_knapsack(vector<int>& val,vector<int>& weight, int W){
+    int N = val.size();
+    vector<vector<ll>> dp(N,vector<ll>(W+1,0));
+    REP(w,W+1){
+        if(weight[0]<=w) dp[0][w] = val[0];
+    }
+    REP(i,N-1){
+        REP(w,W+1){
+            if(w>=weight[i+1]){
+                dp[i+1][w] = dp[i][w-weight[i+1]]+val[i+1];
+            }
+            chmax(dp[i+1][w], dp[i][w]);
+        }
+    }
+    return dp;
+}
 int main(){
-    int N=1<<30;
-    int M;
-    cin >> M;
-    N<<=M;
-    cout << N << endl;
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    int W,N,K;
+    cin >> W >> N >> K;
+    vi A(N),B(N);
+    REP(i,N) cin >> A[i] >> B[i];
+    vector<vector<vi>> DP(N,vector<vi>(W+1,vi(K+1,0)));
+
+    REP(i,N){
+        REP(w,W+1){
+            REP(k,K+1){
+                if(i==0){
+                    if(w>=A[i]){
+                        if(k>0){
+                            DP[i][w][k] = B[i];
+                        }
+                    }
+                }else{
+                    DP[i][w][k] = DP[i-1][w][k];
+                    if(w>=A[i]){
+                        if(k>0){
+                            chmax(DP[i][w][k],DP[i-1][w-A[i]][k-1] + B[i]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    int ans=DP[N-1][W][K];
+
+    cout << ans << endl;
 }

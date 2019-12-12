@@ -63,9 +63,31 @@ ostream& operator<<(ostream& os, deque<T> &q){
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 //fixed<<setprecision(10)<<ans<<endl;
 int main(){
-    int N=1<<30;
-    int M;
-    cin >> M;
-    N<<=M;
-    cout << N << endl;
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    int N,A;
+    cin >> N >> A;
+    vi X(N);
+    REP(i,N) cin>>X[i];
+
+    int max_val = 50*50*2;
+    vector<vector<vector<ll>>> DP(N+1,vector<vector<ll>>(max_val+1,vector<ll>(N+1,0)));
+    DP[0][0][0]=1;
+    REP(i,N+1){
+        REP(v,max_val+1){
+            REP(k,N+1){
+                if(i==0)continue;
+                DP[i][v][k] = DP[i-1][v][k];
+                if(v>=X[i-1] && k){
+                    DP[i][v][k] += DP[i-1][v-X[i-1]][k-1];
+                }
+            }
+        }
+    }
+    ll ans=0;
+    REP(k,N+1){
+        int val = A*k;
+        ans += DP[N][val][k];
+    }
+    cout << ans-1 << endl; //DP[N][0][0]のぶん
 }

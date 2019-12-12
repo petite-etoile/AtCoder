@@ -57,15 +57,31 @@ ostream& operator<<(ostream& os, deque<T> &q){
         os<<*it;
         os<<" ";
     }
-    os<<endl;
+     os<<endl;
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
-//fixed<<setprecision(10)<<ans<<endl;
+bool dfs(int x, vector<vi>& T, int index){
+    if (index == T.size()) return x==0;
+    bool res = false;
+    REP(i,T[0].size()){
+        res |= dfs(x^T[index][i], T, index+1);
+    }
+    return res;
+}
 int main(){
-    int N=1<<30;
-    int M;
-    cin >> M;
-    N<<=M;
-    cout << N << endl;
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    int N,K;
+    cin >> N >> K;
+    vector<vi> T(N,vi(K));
+    REP(i,N){
+        REP(j,K){
+            cin >> T[i][j];
+        }
+    }
+
+    bool ans=dfs(0,T,0);
+    if(ans) cout << "Found\n";
+    else cout << "Nothing\n";
 }

@@ -57,15 +57,27 @@ ostream& operator<<(ostream& os, deque<T> &q){
         os<<*it;
         os<<" ";
     }
-    os<<endl;
+     os<<endl;
     return os;
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 //fixed<<setprecision(10)<<ans<<endl;
 int main(){
-    int N=1<<30;
-    int M;
-    cin >> M;
-    N<<=M;
-    cout << N << endl;
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    string S;
+    cin >> S;
+    S+='+';
+    int ans = 0;
+    bool zero_include = false;
+    for(auto s:S){
+        if(s=='+'){
+            if(!zero_include) ans++;
+            zero_include=false;
+        }else if(s=='0'){
+            zero_include=true;
+        }
+    }
+
+    cout << ans << endl;
 }

@@ -31,6 +31,11 @@ queue<int> q;
 q.push(v);
 v = q.front(); v.pop();
 
+//std::stack
+stack<int> st;
+st.push(v);
+st.back(); st.pop();
+
 //std::deque
 deque<int> q;
 q.push_back(a); q.push_front(b);
