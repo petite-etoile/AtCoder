@@ -37,20 +37,37 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N=I()
-    A=LIN(N)
-    if len(set(A))==N:
-        print("Correct")
-        return
-    l = [0]*(N+1)
-    over = []
-    for a in A:
-        l[a]+=1
-        if l[a]>1:
-            over.append(a)
-    for i in range(1,N+1):
-        if not l[i]:
-            print(over.pop(),i)
-    
+    N,W,C = MI()
+    LRP = LLIN(N)
+    place = set()
+    imos = defaultdict(int)
+    for l,r,p in LRP:
+        
+        place.add(l)
+        place.add(r)
+        place.add(r+1)
+        imos[l]+=p
+        imos[r+1]-=p
+    place.add(0)
+    so_place = sorted(place)
+    d = {}
+    # for i in enumerate(place)
+    cumsum = []
+    before = 0
+    print(imos.items())
+    for s in so_place:
+        cumsum.append(before+imos[s])
+        before += imos[s]
+    print(so_place)
+    print(cumsum)
+    # r = 0
+    # res = 0
+    # ans = inf
+    # for l,cost in imos.items():
+    #     res += cost
+    #     while r-l >= C:
+    #         r=
+
+    # ans = min(imos[r]-imos[l])
 if __name__ == '__main__':
     main()
