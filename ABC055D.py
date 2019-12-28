@@ -37,29 +37,33 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
-    
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
+    N=I()
+    S=ST()
+    S+=S[0]
+    def is_ok():
+        for i,s in enumerate(S[1:-1],start=1):
+            if ans[i]==(s=="o"):
+                ans[i+1]=ans[i-1]
+            else:
+                ans[i+1]=ans[i-1]^1
+        ok = (ans[0]==ans[-1])
+        if ans[0]==(S[0]=="o"):
+            if ans[1]!=ans[-2]:
+                ok=False
+        else:
+            if ans[1]==ans[-2]:
+                ok=False
+        return ok
 
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
-
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
-
-
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
+    for bit in range(1<<2):
+        ans=[0]*(N+1)
+        for i in range(2):
+            ans[i] = bit>>i&1
+        if is_ok():
+            ans="".join(map(str,ans[:-1]))
+            print(ans.replace("1","S").replace("0","W"))
+                
+            return
+    print(-1)
 if __name__ == '__main__':
     main()

@@ -12,7 +12,7 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-from math import floor,sqrt,factorial,log #log2ないｙｐ
+from math import floor,ceil,sqrt,factorial,hypot,log #log2ないｙｐ
 from heapq import heappop, heappush, heappushpop
 from collections import Counter,defaultdict,deque
 from itertools import accumulate,permutations,combinations,product,combinations_with_replacement

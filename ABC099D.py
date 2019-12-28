@@ -37,29 +37,24 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
+    N,C=MI()
+    D=LLIN(C)
+    c=LLIN(N)
+    group = [defaultdict(int) for _ in range(3)]
+    for i in range(N):
+        for j in range(N):
+            col = c[i][j]-1
+            group[(i+j)%3][col]+=1
     
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
+    ans = inf
+    Colors = [i for i in range(C)]
+    for it in permutations(Colors,r=3):
+        tmp = 0
+        for i,col in enumerate(it):
+            for col_ori,num in group[i].items():
+                tmp += D[col_ori][col]*num
 
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
-
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
-
-
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
+        ans = min(ans, tmp)
+    print(ans)
 if __name__ == '__main__':
     main()

@@ -1,3 +1,3 @@
 while 1:
-    s = input().replace('"','\\"').replace("\n","\\"+"\\n")
+    s = input().replace('"','\\"').replace("\n","\\n")
     print("\""+s+"\",")

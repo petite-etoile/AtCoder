@@ -37,29 +37,37 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
+    N,M,D=MI()
+    grid = [ST() for _ in range(N)]
+    ans = 0
     
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
+    #横
+    for i in range(N):
+        for j in range(M):
+            ok = True
+            for k in range(D):
+                if j+k>=M:
+                    ok=False
+                    break
+                if grid[i][j+k]=="#":
+                    ok=False
+                    break
+            if ok:
+                ans += 1
 
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
-
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
-
-
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
+    #縦
+    for i in range(N):
+        for j in range(M):
+            ok=True
+            for k in range(D):
+                if i+k>=N:
+                    ok=False
+                    break
+                if grid[i+k][j]=="#":
+                    ok=False
+                    break
+            if ok:
+                ans += 1
+    print(ans)
 if __name__ == '__main__':
     main()

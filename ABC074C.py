@@ -37,29 +37,52 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
+    A,B,C,D,E,F = MI()
+    A*=100
+    B*=100
+    water = []
+    can = [False]*3001
+    can[0] = True
+    for i in range(3001-A):
+        if can[i]:
+            can[i+A] = True
+    for i in range(3001-B):
+        if can[i]:
+            can[i+B] = True
+    for i in range(1,3001):
+        if can[i]:
+            water.append(i)
+
+    can = [False]*3001
+    can[0] = True
+    for i in range(3001-C):
+        if can[i]:
+            can[i+C] = True
+    for i in range(3001-D):
+        if can[i]:
+            can[i+D] = True
     
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
+    suger = []
+    for i in range(1,3001):
+        if can[i]:
+            suger.append(i)
+    
+    # print(water)
+    # print(suger)
 
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
-
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
-
-
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
+    ans = 0
+    ans_water = A
+    ans_suger = 0
+    for w in water:
+        want = min(F-w, (w//100)*E)
+        idx = bisect_right(suger, want)
+        if idx:
+            s = suger[idx-1]
+            if ans < s/(w+s):
+                ans = s/(w+s)
+                ans_water=w
+                ans_suger=s
+                
+    print(ans_water+ans_suger,ans_suger)
 if __name__ == '__main__':
     main()

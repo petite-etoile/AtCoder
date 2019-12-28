@@ -37,29 +37,27 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
-    
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
-
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
-
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
-
-
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
+    N,M,P,Q,R=MI()
+    XYZ=LLIN(R)
+    choko=[[]for _ in range(N)]
+    for x,y,z in XYZ:
+        x-=1 
+        y-=1
+        choko[x].append((y,z))
+    max_bit=1<<N
+    ans = 0
+    for mask in range(max_bit):
+        boy = [0]*M
+        bitcnt = 0
+        for i in range(N):
+            if mask>>i&1:
+                bitcnt+=1
+                for to,val in choko[i]:
+                    boy[to]+=val
+        if bitcnt!=P:
+            continue
+        boy.sort(reverse=True)
+        ans=max(ans,sum(boy[:Q]))        
+    print(ans)
 if __name__ == '__main__':
     main()

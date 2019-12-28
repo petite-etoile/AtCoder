@@ -37,29 +37,30 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
-    
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
-
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
-
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
-
-
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
+    H,W = MI()
+    def is_inside(to):
+        return 0<=to[0]<H and 0<=to[1]<W
+    S=[ST() for _ in range(H)]
+    queue = deque([(0,0)])
+    visited = set()
+    ans=0
+    for s in S:
+        ans += Counter(s)["."]
+    for i in range(H*W+1):
+        tmp = deque()
+        while queue:
+            fr = queue.popleft()
+            if fr in visited:
+                continue
+            visited.add(fr)
+            for dh,dw in [(-1,0),(0,-1),(1,0),(0,1)]:
+                to = (fr[0]+dh,fr[1]+dw)
+                if to not in visited and is_inside(to) and S[to[0]][to[1]]==".":
+                    tmp.append(to)
+        queue = tmp
+        if (H-1,W-1) in tmp:
+            print(ans-(i+2))
+            return
+    print(-1)
 if __name__ == '__main__':
     main()

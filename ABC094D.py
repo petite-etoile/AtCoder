@@ -12,7 +12,7 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-from math import floor,ceil,sqrt,factorial,log #log2ないｙｐ
+from math import floor,ceil,sqrt,factorial,hypot,log #log2ないｙｐ
 from heapq import heappop, heappush, heappushpop
 from collections import Counter,defaultdict,deque
 from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
@@ -38,10 +38,9 @@ def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
     N=I()
-    A=LI()
-    A.sort()
-    A_max = A[-1]
-    B = min(A,key=lambda x:abs(x-A_max/2))
-    print(A_max, B)
+    A=sorted(LI())
+    maxA = A[-1]
+    ans = min(A[:-1],key = lambda x:abs((maxA/2 - x)))
+    print(maxA,ans)
 if __name__ == '__main__':
     main()

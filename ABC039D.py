@@ -37,29 +37,50 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
-    
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
+    H,W=MI()
+    def is_inside(h,w):
+        return (0<=h<H and 0<=w<W)
 
-    cord_of_x = {}
+    S=[ST() for _ in range(H)]
+    ans = [["#"]*W for _ in range(H)]
     for h in range(H):
         for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
+            if S[h][w]==".":
+                ans[h][w]="."
+                continue
+            for dx in range(-1,2):
+                for dy in range(-1,2):
+                    if (dx,dy)==(0,0):
+                        continue
+                    if not is_inside(h+dy,w+dx):
+                        continue
+                    # print(h,w)
+                    # print(ans[h])
+                    if S[h+dy][w+dx]==".":
+                        ans[h][w]="."
 
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
+    possible=True
+    for h in range(H):
+        for w in range(W):
+            if S[h][w]=="." or ans[h][w]=="#":
+                continue
+            ok = False
+            for dx in range(-1,2):
+                for dy in range(-1,2):
+                    if (dx,dy)==(0,0):
+                        continue
+                    if not is_inside(h+dy,w+dx):
+                        continue
+                    if ans[h+dy][w+dx]=="#":
+                        ok=True
+            if not ok:
+                possible=False
+    if possible:
+        print("possible")
+        for a in ans:
+            print(*a,sep="")
+    else:
+        print("impossible")
 
-
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
 if __name__ == '__main__':
     main()

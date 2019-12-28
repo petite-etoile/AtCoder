@@ -37,29 +37,29 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
-    
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
+    N,M=MI()
+    LRS=LLIN(N)
+    LRS_lsort = sorted(LRS)
+    LRS_rsort = sorted(LRS,key=lambda x: x[1],reverse=True)
 
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
+    cumsum_left  =[0]*(M+2)
+    cumsum_right =[0]*(M+2)
 
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
+    now = 0
+    for i in range(M+1)[::-1]:
+        while LRS_lsort and LRS_lsort[-1][0]==i:
+            now += LRS_lsort.pop()[2]
+        cumsum_left[i]=now
 
+    now = 0
+    for i in range(M+1):
+        while LRS_rsort and LRS_rsort[-1][1]==i:
+            now += LRS_rsort.pop()[2]
+        cumsum_right[i]=now
 
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
+    ans = 0
+    for i in range(1,M+1):
+        ans = max(ans, cumsum_left[i+1]+cumsum_right[i-1])
+    print(ans)
 if __name__ == '__main__':
     main()

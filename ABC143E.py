@@ -37,6 +37,42 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
+    # ワーシャルフロイド
+    def warshall_floyd(d, N):
+        for k in range(N):
+            for i in range(N):
+                for j in range(N):
+                    d[i][j]=min(d[i][j], d[i][k] + d[k][j])
+    
+    N,M,L=MI()
+    ABC=LLIN(M)
+    d=[[float("inf")] * N for i in range(N)]
+    for i in range(N):
+        d[i][i] = 0
+    
+    for a,b,c in ABC:
+        a-=1
+        b-=1
+        d[a][b]=c
+        d[b][a]=c
+
+    warshall_floyd(d,N)
+
+    D=[[float("inf")] * N for i in range(N)]
+    for i in range(N):
+        for j in range(N):
+            if d[i][j]<=L:
+                D[i][j] = 1
+        
+    warshall_floyd(D,N)
+
+    Q=I()
+    ST=LLIN_(Q)
+    for s,t in ST:
+        if D[s][t]==inf:
+            print(-1)
+        else:
+            print(D[s][t]-1)
     
 if __name__ == '__main__':
     main()

@@ -37,29 +37,43 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
+    H,W=MI()
     A=LLIN(H)
+    odds=[]
+    ans=[]
+    for i in range(H):
+        if i&1:
+            for j in range(W)[::-1]:
+                if A[i][j]&1:
+                    if j==0:
+                        dy=1
+                        dx=0
+                    else:
+                        dy=0
+                        dx=-1
+                    if i+dy!=H:
+                        print(i,i+dy,j,j+dx)
+                        ans.append((i,j,i+dy,j+dx))
+                        A[i+dy][j+dx]+=1
+        else:
+            for j in range(W)[::-1]:
+                if A[i][j]&1:
+                    if j==W-1:
+                        dy=1
+                        dx=0
+                    else:
+                        dy=0
+                        dx=1
+                    if i+dy!=H:
+                        print(i,i+dy,j,j+dx)
+                        ans.append((i,j,i+dy,j+dx))
+                        A[i+dy][j+dx]+=1
+
+    print(len(ans))
+    for a in ans:
+        print(*a)
     
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
-
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
-
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
 
 
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
 if __name__ == '__main__':
     main()

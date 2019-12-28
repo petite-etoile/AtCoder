@@ -36,30 +36,35 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
+class BigCombination(object):
+
+    def __init__(self, mod: int=10**9+7, max_n: int=10**6):
+        fac, inv=[1], []
+        fac_append, inv_append=fac.append, inv.append
+
+        for i in range(1, max_n+1):
+            fac_append(fac[-1] * i % mod)
+
+        inv_append(pow(fac[-1], mod-2, mod))
+
+        for i in range(max_n, 0, -1):
+            inv_append(inv[-1] * i % mod)
+
+        self.mod, self.factorial, self.inverse=mod, fac, inv[::-1]
+
+    def get_combination(self, n, r):
+        if n < r:
+            return 0
+        return self.factorial[n] * self.inverse[r] * self.inverse[n-r] % self.mod
+
+    def get_permutation(self, n, r):
+        if n < r:
+            return 0
+        return self.factorial[n] * self.inverse[n-r] % self.mod
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
-    
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
-
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
-
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
-
-
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
+    N=I()
+    R=I()
+    B = BigCombination()
+    print(B.get_combination(N-1+R,R))
 if __name__ == '__main__':
     main()

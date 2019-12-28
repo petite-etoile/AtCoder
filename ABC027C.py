@@ -37,29 +37,24 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,D=MI()
-    A=LLIN(H)
-    
-    def get_cost(fr:tuple, to:tuple):
-        return abs(fr[0]-to[0]) + abs(fr[1]-to[1])
+    N=I()
+    N_=N
+    depth = 0
+    while N_:
+        N_>>=1
+        depth+=1
+    depth_odd = depth%2
+    takahashi=True
+    x=1
+    while x<=N:
+        x<<=1
+        if not (takahashi^depth_odd):
+            x+=1
+        takahashi^=1
+    if takahashi:
+        print("Takahashi")
+    else:
+        print("Aoki")
 
-    cord_of_x = {}
-    for h in range(H):
-        for w in range(W):
-            cord_of_x[A[h][w]] = (h,w)
-
-    cumsum = [0]*(H*W+1+D)
-    for x in range(1,H*W):
-        if x+D not in cord_of_x:
-            break
-        cost = get_cost(cord_of_x[x], cord_of_x[x+D])
-        cumsum[x+D]+=cumsum[x]+cost
-
-
-    Q=I()
-    LR=LLIN(Q)
-    for l,r in LR:
-        d = l%D
-        print(cumsum[r]-cumsum[l])
 if __name__ == '__main__':
     main()
