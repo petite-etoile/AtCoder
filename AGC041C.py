@@ -37,38 +37,51 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,K=MI()
     N=I()
-    cnt_h = [0]*H
-    cnt_w = [0]*W
-    posi = []
-    for _ in range(N):
-        h,w = MI_()
-        cnt_h[h]+=1
-        cnt_w[w]+=1
-        posi.append((h,w))
-
-    cnt_dict_h = defaultdict(int) #cnt_dict_h[x]:=x個飴がある行が何個あるか
-    for cnt in cnt_h:
-        cnt_dict_h[cnt]+=1
-    cnt_dict_w = defaultdict(int)
-    for cnt in cnt_w:
-        cnt_dict_w[cnt]+=1
-    
-    ans = 0
-    for cnt,k in cnt_dict_h.items():
-        ans += k*cnt_dict_w[K-cnt]
-    
-    for h,w in posi:
-        if cnt_h[h]+cnt_w[w]==K: #K-1個なのに数えてた
-            ans-=1
-        if cnt_h[h]+cnt_w[w]==K+1: #K個なのに数えてなかった
-            ans+=1
-    print(ans)
-
-
-
-
+    if N%3!=0:
+        if N%4:
+            print(-1)
+            return
+        if N%4==0:
+            ans = [["."]*N for _ in range(N)]
+            for i in range(N):
+                base = (i//4)*4
+                if i%4==0:
+                    ans[i][base]="a"
+                    ans[i][base+1]="a"
+                    ans[i][base+2]="c"
+                    ans[i][base+3]="d"
+                elif i%4==1:
+                    ans[i][base]="b"
+                    ans[i][base+1]="b"
+                    ans[i][base+2]="c"
+                    ans[i][base+3]="d"
+                elif i%4==2:
+                    ans[i][base]="c"
+                    ans[i][base+1]="d"
+                    ans[i][base+2]="a"
+                    ans[i][base+3]="a"
+                else:
+                    ans[i][base]="c"
+                    ans[i][base+1]="d"
+                    ans[i][base+2]="b"
+                    ans[i][base+3]="b"
+                    
+            for a in ans:
+                print(*a,sep="")    
+            return
+    ans = [["."]*N for _ in range(N)]
+    for i in range(N):
+        base = (i//3)*3
+        if i%3==0:
+            ans[i][base]="a"
+        elif i%3==1:
+            ans[i][base]="a"
+        else:
+            ans[i][base+1]="a"
+            ans[i][base+2]="a"
+    for a in ans:
+        print(*a,sep="")
 
 if __name__ == '__main__':
     main()

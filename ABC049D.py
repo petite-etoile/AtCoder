@@ -64,29 +64,30 @@ def main():
                     big_root=root_y
                 self.nodes[big_root] += self.nodes[small_root]
                 self.nodes[small_root]=big_root
+            
+        def same(self,x,y):
+            return self.get_root(x)==self.get_root(y)
     uf1=UnionFind(N)
     uf2 = UnionFind(N)
+    uf_both = UnionFind(N)
     for _ in range(K):
         p, q = MI_()
         uf1.unite(p, q)
-    
+        
     for _ in range(L):
         r, s = MI_()
         uf2.unite(r, s)
-    
-    set_1 = [set() for _ in range(N)]
-    set_2 = [set() for _ in range(N)]
 
+    cnt = defaultdict(int)    
+    A = [-1]*N
+    B = [-1]*N
     for i in range(N):
-        set_1[uf1.get_root(i)].add(i)
-        set_2[uf2.get_root(i)].add(i)
-    for i in range(N):
-        par_1 = uf1.get_root(i)
-        par_2 = uf2.get_root(i)
-        
-        ans = len(set_1[par_1] & set_2[par_2])
-        print(ans, end=" ")
-    print()
+        A[i] = uf1.get_root(i)
+        B[i] = uf2.get_root(i)
+        cnt[A[i],B[i]] += 1
+    
+    print(*[cnt[A[i],B[i]] for i in range(N)] )
+
 
 if __name__ == '__main__':
     main()

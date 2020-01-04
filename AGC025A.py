@@ -37,38 +37,11 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,K=MI()
     N=I()
-    cnt_h = [0]*H
-    cnt_w = [0]*W
-    posi = []
-    for _ in range(N):
-        h,w = MI_()
-        cnt_h[h]+=1
-        cnt_w[w]+=1
-        posi.append((h,w))
-
-    cnt_dict_h = defaultdict(int) #cnt_dict_h[x]:=x個飴がある行が何個あるか
-    for cnt in cnt_h:
-        cnt_dict_h[cnt]+=1
-    cnt_dict_w = defaultdict(int)
-    for cnt in cnt_w:
-        cnt_dict_w[cnt]+=1
-    
-    ans = 0
-    for cnt,k in cnt_dict_h.items():
-        ans += k*cnt_dict_w[K-cnt]
-    
-    for h,w in posi:
-        if cnt_h[h]+cnt_w[w]==K: #K-1個なのに数えてた
-            ans-=1
-        if cnt_h[h]+cnt_w[w]==K+1: #K個なのに数えてなかった
-            ans+=1
-    print(ans)
-
-
-
-
-
+    if 10**(len(str(N))-1)==N:
+        print(10)
+    else:
+        print(sum([int(i) for i in str(N)]))
+        
 if __name__ == '__main__':
     main()

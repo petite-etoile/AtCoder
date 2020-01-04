@@ -37,38 +37,40 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,K=MI()
-    N=I()
-    cnt_h = [0]*H
-    cnt_w = [0]*W
-    posi = []
-    for _ in range(N):
-        h,w = MI_()
-        cnt_h[h]+=1
-        cnt_w[w]+=1
-        posi.append((h,w))
-
-    cnt_dict_h = defaultdict(int) #cnt_dict_h[x]:=x個飴がある行が何個あるか
-    for cnt in cnt_h:
-        cnt_dict_h[cnt]+=1
-    cnt_dict_w = defaultdict(int)
-    for cnt in cnt_w:
-        cnt_dict_w[cnt]+=1
-    
-    ans = 0
-    for cnt,k in cnt_dict_h.items():
-        ans += k*cnt_dict_w[K-cnt]
-    
-    for h,w in posi:
-        if cnt_h[h]+cnt_w[w]==K: #K-1個なのに数えてた
-            ans-=1
-        if cnt_h[h]+cnt_w[w]==K+1: #K個なのに数えてなかった
-            ans+=1
-    print(ans)
-
-
-
-
-
+    N,M,V,P=MI()
+    A=LI()
+    A.sort()
+    rival = N-P
+    while rival>0 and A[rival]==A[rival-1]:
+        rival-=1
+    rival = A[rival]
+    def is_ok(x,V):
+        # V-=x+1 #自分含め下位
+        if x==N-1:
+            return True
+        if V==N:#全員投票される
+            return A[x]>=rival
+        print(x,rival-A[x],M)
+        return A[x]>=rival or rival-A[x]<=M
+        # if V<=0:
+        #     return abs(A[x]-rival)<=M
+        # if V>=N-1-rival:
+        #     return abs(A[x]-rival)
+        # else:
+        #     print(x)
+        #     return abs(A[N-V-1]-A[x])<M
+            
+        
+    print(A)
+    ok = N-1
+    ng = -1
+    while abs(ok-ng)>1:
+        mid = (ok-ng)//2
+        print(ok,ng,mid,is_ok(mid,V))
+        if is_ok(mid,V):
+            ok = mid
+        else:
+            ng = mid
+    print(N-ok)
 if __name__ == '__main__':
     main()

@@ -37,6 +37,7 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    N=I()
+    print(-1)
 if __name__ == '__main__':
     main()

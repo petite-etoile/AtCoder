@@ -37,38 +37,20 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    H,W,K=MI()
-    N=I()
-    cnt_h = [0]*H
-    cnt_w = [0]*W
-    posi = []
-    for _ in range(N):
-        h,w = MI_()
-        cnt_h[h]+=1
-        cnt_w[w]+=1
-        posi.append((h,w))
-
-    cnt_dict_h = defaultdict(int) #cnt_dict_h[x]:=x個飴がある行が何個あるか
-    for cnt in cnt_h:
-        cnt_dict_h[cnt]+=1
-    cnt_dict_w = defaultdict(int)
-    for cnt in cnt_w:
-        cnt_dict_w[cnt]+=1
+    K=I()
     
-    ans = 0
-    for cnt,k in cnt_dict_h.items():
-        ans += k*cnt_dict_w[K-cnt]
-    
-    for h,w in posi:
-        if cnt_h[h]+cnt_w[w]==K: #K-1個なのに数えてた
-            ans-=1
-        if cnt_h[h]+cnt_w[w]==K+1: #K個なのに数えてなかった
-            ans+=1
-    print(ans)
-
-
-
-
-
+    def solve(S):
+        grid_num = S//K
+        center = S//2
+        ans = 0
+        for i in range(grid_num):
+            for j in range(grid_num):
+                l = [(i,j),(i,j+1),(i+1,j),(i+1,j+1)]
+                a,b = max(l,key =  lambda x:hypot(abs(x[0]*K-center),abs(x[1]*K-center)))
+                if hypot(abs(a*K-center),abs(b*K-center)) <= S//2:
+                    ans+=1
+        return ans
+    ans1,ans2 = solve(200),solve(300)
+    print(ans1,ans2)
 if __name__ == '__main__':
     main()
