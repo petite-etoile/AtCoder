@@ -37,35 +37,18 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,M=MI()
-    A=sorted(LI())
-    
-    *cumsum_rev, = accumulate(A[::-1])
-
-    def is_ok(x):
-        cnt = 0
-        for a in A:
-            cnt += N-bisect_left(A, x-a)
-        return cnt >= M 
-
-    ok = 0
-    ng = 10**7
-    while ng-ok>1:
-        mid = (ok+ng)//2
-        if is_ok(mid):
-            ok = mid
-        else:
-            ng = mid
-    
-    ans = 0
-    cnt_sum = 0
+    N,M = MI()
+    A = LI()
+    cumsum = [0]
     for a in A:
-        cnt = N-bisect_left(A,ok-a)
-        cnt_sum += cnt
-        if cnt:
-            ans += (a * cnt) + cumsum_rev[cnt-1]
-        
-    ans -= (cnt_sum-M)*ok
+        cumsum.append((cumsum[-1] + a)%M)
+
+    D = defaultdict(int)
+    ans = 0
+    for c in cumsum:
+        ans += D[c]
+        D[c] += 1
     print(ans)
+
 if __name__ == '__main__':
     main()

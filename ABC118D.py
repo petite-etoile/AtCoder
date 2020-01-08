@@ -37,35 +37,40 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,M=MI()
-    A=sorted(LI())
-    
-    *cumsum_rev, = accumulate(A[::-1])
+    N,M = MI()
+    A=sorted(LI(), reverse=True)
+    num_cost = {
+        1:2,
+        2:5,
+        3:5,
+        4:4,
+        5:5,
+        6:6,
+        7:3,
+        8:7,
+        9:6
+    }
 
-    def is_ok(x):
-        cnt = 0
+
+    dp = [-inf]*(N+1) #dp[i]:ちょうどi本使ったときの最大桁数
+    dp[0] = 0
+
+    for i in range(1,N+1):
         for a in A:
-            cnt += N-bisect_left(A, x-a)
-        return cnt >= M 
+            if i-num_cost[a]>=0:
+                dp[i] = max(dp[i], dp[i-num_cost[a]] + 1)
 
-    ok = 0
-    ng = 10**7
-    while ng-ok>1:
-        mid = (ok+ng)//2
-        if is_ok(mid):
-            ok = mid
-        else:
-            ng = mid
-    
-    ans = 0
-    cnt_sum = 0
-    for a in A:
-        cnt = N-bisect_left(A,ok-a)
-        cnt_sum += cnt
-        if cnt:
-            ans += (a * cnt) + cumsum_rev[cnt-1]
-        
-    ans -= (cnt_sum-M)*ok
-    print(ans)
+    ans = []
+    while N:
+        for a in A:
+            cost = num_cost[a]
+            if N-cost>=0 and dp[N-cost]==dp[N]-1: #aを使って最大桁数で作れる
+                ans.append(a)
+                N-=cost
+                break
+    print(*ans,sep="")
+
+
+
 if __name__ == '__main__':
     main()

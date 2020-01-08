@@ -41,16 +41,16 @@ def main():
     CSF=LLIN(N-1)
     def solve(CSF):
         now = 0
-        for i,(c,s,f) in enumerate(CSF):
-            if now <= s: #そのまま最速で乗れる
-                now = s + c
-                continue
+        for c,s,f in CSF:
+            if now<=s:
+                now = s
             else:
-                if now%f != 0:
-                    now += f - now%f
-                now += c
+                over = now-s
+                if over%f:
+                    now += (f-(over%f))
+            now += c
         print(now)
-    
+                
     for i in range(N):
         solve(CSF[i:])
 

@@ -37,35 +37,35 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,M=MI()
-    A=sorted(LI())
+    N = I()
+    N*=2
+    size = -1
+    group_num = -1
+    for i in range(2,N+2):
+        if i*(i-1)==N:
+            group_num = i
+            size = i-1
+            break
+    if size == -1:
+        print("No")
+        return 
     
-    *cumsum_rev, = accumulate(A[::-1])
+    ans = [[-1]*size for _ in range(group_num)]
 
-    def is_ok(x):
-        cnt = 0
-        for a in A:
-            cnt += N-bisect_left(A, x-a)
-        return cnt >= M 
+    now = 0
+    for i in range(group_num):
+        for j in range(size):
+            if j<i:
+                ans[i][j] = ans[j][i-1]
+            else:
+                now += 1
+                ans[i][j] = now
 
-    ok = 0
-    ng = 10**7
-    while ng-ok>1:
-        mid = (ok+ng)//2
-        if is_ok(mid):
-            ok = mid
-        else:
-            ng = mid
-    
-    ans = 0
-    cnt_sum = 0
-    for a in A:
-        cnt = N-bisect_left(A,ok-a)
-        cnt_sum += cnt
-        if cnt:
-            ans += (a * cnt) + cumsum_rev[cnt-1]
         
-    ans -= (cnt_sum-M)*ok
-    print(ans)
+    print("Yes")
+    print(group_num)
+    for a in ans:
+        print(size,*a)
+
 if __name__ == '__main__':
     main()

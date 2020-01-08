@@ -37,35 +37,27 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,M=MI()
-    A=sorted(LI())
-    
-    *cumsum_rev, = accumulate(A[::-1])
-
-    def is_ok(x):
-        cnt = 0
-        for a in A:
-            cnt += N-bisect_left(A, x-a)
-        return cnt >= M 
-
-    ok = 0
-    ng = 10**7
-    while ng-ok>1:
-        mid = (ok+ng)//2
-        if is_ok(mid):
-            ok = mid
-        else:
-            ng = mid
-    
+    LR=LLIN(3)
     ans = 0
-    cnt_sum = 0
-    for a in A:
-        cnt = N-bisect_left(A,ok-a)
-        cnt_sum += cnt
-        if cnt:
-            ans += (a * cnt) + cumsum_rev[cnt-1]
-        
-    ans -= (cnt_sum-M)*ok
+    p = 1/(LR[0][1]-LR[0][0]+1)
+    num2 = LR[1][1]-LR[1][0]+1
+    num3 = LR[2][1]-LR[2][0]+1
+
+    for x in range(LR[0][0],LR[0][1]+1):
+        low = max(x+1,LR[1][0])
+        high = LR[1][1]
+        if low>high:
+            continue
+        p2 = ((high-low+1))/num2
+
+        low = max(x+1,LR[2][0])
+        high = LR[2][1]
+        p3 = ((high-low+1))/num3
+        if low>high:
+            continue
+
+        if p2>0 and p3>0:
+            ans += p * p2 * p3
     print(ans)
 if __name__ == '__main__':
     main()

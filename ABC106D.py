@@ -37,35 +37,26 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,M=MI()
-    A=sorted(LI())
-    
-    *cumsum_rev, = accumulate(A[::-1])
+    N,M,Q = MI()
+    LR=LLIN_(M)
+    PQ=LLIN(Q)
 
-    def is_ok(x):
-        cnt = 0
-        for a in A:
-            cnt += N-bisect_left(A, x-a)
-        return cnt >= M 
+    D=[[0]*N for _ in range(N)]
+    for l,r in LR:
+        D[l][r] += 1
 
-    ok = 0
-    ng = 10**7
-    while ng-ok>1:
-        mid = (ok+ng)//2
-        if is_ok(mid):
-            ok = mid
-        else:
-            ng = mid
+    cumsum_2d = [[0]*(N+1) for _ in range(N+1)]
     
-    ans = 0
-    cnt_sum = 0
-    for a in A:
-        cnt = N-bisect_left(A,ok-a)
-        cnt_sum += cnt
-        if cnt:
-            ans += (a * cnt) + cumsum_rev[cnt-1]
-        
-    ans -= (cnt_sum-M)*ok
-    print(ans)
+    for i in range(N):
+        for j,d in enumerate(D[i]):
+            cumsum_2d[i+1][j+1] = d
+
+    for i in range(N):
+        for j,d in enumerate(D[i]):
+            cumsum_2d[i+1][j+1] += cumsum_2d[i+1][j] + cumsum_2d[i][j+1] - cumsum_2d[i][j]
+    
+    for p,q in PQ:
+        print(cumsum_2d[q][q]-cumsum_2d[p-1][q]-cumsum_2d[q][p-1]+cumsum_2d[p-1][p-1])
+
 if __name__ == '__main__':
     main()
