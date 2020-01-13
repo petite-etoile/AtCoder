@@ -10,6 +10,7 @@
 */
 #include <bits/stdc++.h>
 typedef long long int64;
+typedef long double ld;
 using namespace std;
 using P = pair<int64, int64>;
 typedef vector<int> vi;
@@ -64,10 +65,70 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 //fixed<<setprecision(10)<<ans<<endl;
 
 
-#define EPS 1E-10
+
+
+
+
+
+
+
+
+
+
+
+
+int N,x[301],y[301];
+
+
+ld get_r(ld X, ld Y){
+    ld ret = 0;
+    
+    for(int i = 0;i < N;++i)
+        ret = max(ret,(X - x[i]) * (X - x[i]) + (Y - y[i]) * (Y - y[i]));
+    
+    return ret;
+}
+
+ld searchY(ld X){
+    ld lo = 0,hi = 1000;
+    
+    for(int it = 0;it < 100;++it){
+        ld a = (2 * lo + hi) / 3;
+        ld b = (lo + 2 * hi) / 3;
+        
+        ld ra = get_r(X,a);
+        ld rb = get_r(X,b);
+        
+        if(ra < rb) hi = b;
+        else lo = a;
+    }
+    
+    return get_r(X,lo);
+}
+
+ld searchX(){
+    ld lo = 0,hi = 1000;
+    
+    for(int it = 0;it < 100;++it){
+        ld a = (2 * lo + hi) / 3;
+        ld b = (lo + 2 * hi) / 3;
+        
+        ld ra = searchY(a);
+        ld rb = searchY(b);
+        
+        if(ra < rb) hi = b;
+        else lo = a;
+    }
+    
+    return searchY(lo);
+}
+
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
+    cin >> N;
+    REP(i,N){ cin >> x[i] >> y[i];}
 
-    cout << fixed<<setprecision(10)<<EPS<<endl;
+    ld ans = sqrt(searchX());
+    cout << fixed<<setprecision(10)<<ans<<endl;
 }
