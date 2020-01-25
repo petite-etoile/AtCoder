@@ -37,6 +37,11 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    A=LI()
+    A.sort()
+    if A==[1,4,7,9]:
+        print("YES")
+    else:
+        print("NO")
 if __name__ == '__main__':
     main()

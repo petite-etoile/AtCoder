@@ -37,6 +37,14 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    N=I()
+    A=LI()
+    now = inf
+    ans = 0
+    for a in A:
+        if a<=now:
+            ans+=1
+            now = a
+    print(ans)
 if __name__ == '__main__':
     main()

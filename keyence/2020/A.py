@@ -37,6 +37,9 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    H=I()
+    W=I()
+    N=I()
+    print(ceil(N/max(H,W)))
 if __name__ == '__main__':
     main()

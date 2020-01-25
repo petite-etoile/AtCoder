@@ -37,6 +37,17 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
+    N=I()
     
+    d = defaultdict(int)
+    for i in range(1,N+1):
+        bot,top = str(i)[0],str(i)[-1]
+        d[bot,top] += 1
+    
+    ans = 0
+    for i in range(1,N+1):
+        top,bot = str(i)[0],str(i)[-1]
+        ans += d[bot,top]    
+    print(ans)
 if __name__ == '__main__':
     main()

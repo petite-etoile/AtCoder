@@ -12,13 +12,12 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-# from math import floor,ceil,sqrt,factorial,hypot,log #log2ないｙｐ
-# from heapq import heappop, heappush, heappushpop
-# from collections import Counter,defaultdict,deque
-# from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
-# from bisect import bisect_left,bisect_right
-# from copy import deepcopy
-from fractions import gcd
+from math import floor,ceil,sqrt,factorial,hypot,log #log2ないｙｐ
+from heapq import heappop, heappush, heappushpop
+from collections import Counter,defaultdict,deque
+from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
+from bisect import bisect_left,bisect_right
+from copy import deepcopy
 inf=float('inf')
 mod = 10**9+7
 def pprint(*A): 
@@ -103,16 +102,24 @@ class ModInt:
 
 def main():
     N=I()
-    A=LI()
-    l = 1
-    for a in A:
-        l *= a//gcd(l,a)
-    ans = 0
-    l%=mod
-    for a in A:
-        ans += l * pow(a,mod-2,mod)
-        ans %= mod
-    print(ans)
+    AB=LLIN_(N-1)
+    edge = [[] for _ in range(N)]
+    for a,b in AB:
+        edge[a].append(b)
+        edge[b].append(a)
+
+    visited = set()
+    def dfs(node):
+        res = [ModInt(1),ModInt(1)]
+        visited.add(node)
+        for to in edge[node]:
+            if to in visited:
+                continue
+            score = dfs(to)
+            res[0] *= sum(score)
+            res[1] *= score[0]
+        return res
+    ans = dfs(0)
+    print(sum(ans))
 if __name__ == '__main__':
     main()
-

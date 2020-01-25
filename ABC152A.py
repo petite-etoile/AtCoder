@@ -37,6 +37,10 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    N,M=MI()
+    if N==M:
+        print("Yes")
+    else:
+        print("No")
 if __name__ == '__main__':
     main()

@@ -37,6 +37,30 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    N=I()
+    A=LI()
+    B=LI()
+    amari = []
+    shortage = 0
+    ans=0
+    for a,b in zip(A,B):
+        if a<b:
+            shortage+=b-a
+            ans+=1
+        else:
+            amari.append(a-b)
+    if shortage==0:
+        print(0)
+        return
+    amari.sort(reverse=True)
+    for a in amari:
+        shortage -= a
+        ans += 1
+        if shortage<=0:
+            print(ans)
+            return 
+
+    print(-1)
+
 if __name__ == '__main__':
     main()

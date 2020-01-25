@@ -37,6 +37,13 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    S=ST()
+    N = len(S)
+    for l in range(N):
+        for r in range(l,N):
+            if S[:l]+S[r:]=="keyence":
+                print("YES")
+                return
+    print("NO")
 if __name__ == '__main__':
     main()

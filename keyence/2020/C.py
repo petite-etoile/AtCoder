@@ -37,6 +37,10 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    N,K,S=MI()
+    if S==10**9:
+        print(*([S]*K + [1]*(N-K)))
+    else:
+        print(*([S]*K + [S+1]*(N-K)))
 if __name__ == '__main__':
     main()

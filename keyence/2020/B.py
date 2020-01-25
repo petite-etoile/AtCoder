@@ -37,6 +37,24 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    N=I()
+    XL=LLIN(N)
+    XL.sort(key=lambda x: x[0]+x[1])
+    dp = [1]*N
+    now = -inf
+    ans = 0
+    for i,(x,l) in enumerate(XL):
+        if now <= x-l:
+            now = x+l
+            ans += 1
+
+        idx = bisect_left(XL,[x-l,0])
+        if idx:
+            dp[i] = dp[idx-1] + 1
+        if i:
+            dp[i] = dp[i-1]
+
+        # dp[i] = bisect_left(XL,x-l)
+    print(ans)
 if __name__ == '__main__':
     main()

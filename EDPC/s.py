@@ -12,13 +12,12 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-# from math import floor,ceil,sqrt,factorial,hypot,log #log2ないｙｐ
-# from heapq import heappop, heappush, heappushpop
-# from collections import Counter,defaultdict,deque
-# from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
-# from bisect import bisect_left,bisect_right
-# from copy import deepcopy
-from fractions import gcd
+from math import floor,ceil,sqrt,factorial,hypot,log #log2ないｙｐ
+from heapq import heappop, heappush, heappushpop
+from collections import Counter,defaultdict,deque
+from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
+from bisect import bisect_left,bisect_right
+from copy import deepcopy
 inf=float('inf')
 mod = 10**9+7
 def pprint(*A): 
@@ -102,17 +101,23 @@ class ModInt:
             return ModInt(pow(other, self.x, mod))
 
 def main():
-    N=I()
-    A=LI()
-    l = 1
-    for a in A:
-        l *= a//gcd(l,a)
-    ans = 0
-    l%=mod
-    for a in A:
-        ans += l * pow(a,mod-2,mod)
-        ans %= mod
-    print(ans)
+    K=[int(i) for i in ST()]
+    D=I()
+    N=len(K)
+    dp = [[[ModInt(0)]*D for _ in range(2)] for _ in range(N+1)] # dp[i][less][j]:=i桁目までで桁和j(mod D)、でなんパターンあるか
+
+    dp[0][0][0]+=1
+    for i in range(N):
+        for less in range(2):
+            limit = 10 if less else K[i]+1
+            for d in range(D):
+                for j in range(limit):
+                    if less or j!=limit-1:
+                        dp[i+1][1][(d+j)%D] += dp[i][less][d]
+                    else:
+                        dp[i+1][0][(d+j)%D] += dp[i][less][d]
+    print(dp[-1][0][0] + dp[-1][1][0] - 1) #0の分
+
+
 if __name__ == '__main__':
     main()
-
