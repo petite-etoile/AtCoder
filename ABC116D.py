@@ -39,6 +39,27 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    N,K = MI()
+    TD = LLIN(N)
+    TD.sort(key = lambda x:x[1], reverse=True)
+
+    neta = set()
+    double = []
+    ans = 0
+    S = 0
+    for i,(t,d) in enumerate(TD):
+        if i < K:
+            if t in neta:
+                double.append(d)
+            else:
+                neta.add(t)
+            S += d
+        else:
+            if t not in neta and double:
+                S -= double.pop()
+                S += d
+                neta.add(t)
+        ans = max(ans, S + len(neta)**2)
+    print(ans)
 if __name__ == '__main__':
     main()

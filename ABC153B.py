@@ -39,6 +39,8 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    H,N = MI()
+    A = sum(LI())
+    print("YNeos"[H>A::2])
 if __name__ == '__main__':
     main()

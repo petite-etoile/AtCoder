@@ -39,6 +39,11 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    H = I()
+    def dfs(x):
+        if x == 1:
+            return 1
+        return 2 * dfs(x//2) + 1
+    print(dfs(H))
 if __name__ == '__main__':
     main()

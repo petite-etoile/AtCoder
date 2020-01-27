@@ -36,9 +36,48 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
+
 def main():
     N,M,D = MI()
     A=LI()
+
+    from_ = [i for i in range(N)]
+    for a in A:
+        from_[a-1],from_[a] = from_[a], from_[a-1]
     
+    to = [0]*N #to[i] := iのあみだくじ1回の行き先
+    for i,f in enumerate(from_):
+        to[f] = i
+    
+    root = [-1]*N
+    loop_list = [[] for _ in range(N)]
+    idx_in_loop = [0]*N
+    for i in range(N):
+        if root[i] == -1: ##まだ他のループに含まれていない
+            now = i
+            idx = 0
+            while 1: 
+                loop_list[i].append(now)
+                idx_in_loop[now] = idx
+                now = to[now]
+                root[now] = i
+                idx += 1
+                if now == i:
+                    break
+            
+
+    ans = [0]*N
+    for i in range(N):
+        l = loop_list[root[i]]
+        idx = idx_in_loop[i]
+        loop_length = len(l)
+        K = D
+
+        K %= loop_length
+        ans[i] = l[(K+idx)%loop_length]
+    print(*[a+1 for a in ans],sep="\n")
+
+        
+
 if __name__ == '__main__':
     main()

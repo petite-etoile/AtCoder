@@ -39,6 +39,7 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    H,A =MI()
+    print(ceil(H/A))
 if __name__ == '__main__':
     main()

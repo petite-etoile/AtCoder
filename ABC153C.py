@@ -39,6 +39,10 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    N,K = MI()
+    H = LI()
+    H.sort(reverse=True)
+    print(sum(H[K:]))
+
 if __name__ == '__main__':
     main()

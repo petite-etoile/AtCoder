@@ -27,5 +27,5 @@ a = glob("*.py")
 for f in a:
     with open(f) as f1:
         for l in f1:
-            if "ceil" in l and not "import" in l:
+            if "accumulate" in l and not "import" in l:
                 print(f,l)

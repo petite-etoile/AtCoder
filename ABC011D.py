@@ -39,6 +39,35 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
+    N,D = MI()
+    X,Y = MI()
+
+    Pascal = [[0]*(N+1) for _ in range(N+1)]
+    Pascal[0][0] = 1
+    for n in range(N):
+        for r in range(N):
+            Pascal[n+1][r] += Pascal[n][r]/2
+            Pascal[n+1][r+1] += Pascal[n][r]/2
+
+    if X%D or Y%D:
+        print(0)
+        return
+    step_x,step_y = X//D ,Y//D
     
+    ans = 0
+    remain = N - (step_x + step_y)
+
+    if remain < 0 or remain&1:
+        print(0)
+        return 
+
+    for r in range(remain+1)[::2]:
+        try:
+            minus_x, minus_y = r//2, (remain-r)//2
+            x = step_x + r
+            ans += Pascal[N][x] * Pascal[x][minus_x] * Pascal[N-x][minus_y]
+        except:
+            pass
+    print(ans)
 if __name__ == '__main__':
     main()

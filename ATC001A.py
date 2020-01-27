@@ -38,36 +38,43 @@ print("No")
 
 def main():
     H, W = map(int, input().split())
-    c = []
+    grid = [input() for _ in range(H)]
+    start = ""
     for i in range(H):
-        c_i = list(input())
-        c.append(c_i)
-        if "s" in c_i:
-            y = i
-            x = c_i.index("s")
-    searched = [[False for i in range(W)] for j in range(H)]
+        if "s" in grid[i]:
+            w = grid[i].index("s")
+            h = i
+            start = (h,w)
 
-    def push_neighbor(x, y, stack):
-        if x < 0 or x >= W or y < 0 or y >= H:
-            return
-        elif searched[y][x]:
-            return
-        else:
-            searched[y][x] = True
-        if c[y][x] == ".":
-            stack.append([x, y])
-        elif c[y][x] == "g":
-            print("Yes")
-            exit()
 
-    stack = [[x, y]]
+
+    def is_inside(hw):
+        h,w = hw
+        return 0<=h<H and 0<=w<W
+
+    visited = set()
+
+    stack = [start]
+    dxdy = [(1,0),(0,1),(-1,0),(0,-1)]
     while stack:
-        #print(x, y, stack)
-        x, y = stack.pop()
-        push_neighbor(x + 1, y, stack)
-        push_neighbor(x - 1, y, stack)
-        push_neighbor(x, y+1, stack)
-        push_neighbor(x, y-1, stack)
+        h, w = stack.pop()
+        if (h,w) in visited:
+            continue
+        visited.add((h,w))
+        for dw,dh in dxdy:
+            to = (h+dh, w+dw)
+            if to in visited:
+                continue
+            if is_inside(to):
+                if grid[to[0]][to[1]]=="#":
+                    continue
+                elif grid[to[0]][to[1]]==".":
+                    stack.append(to)
+                else:
+                    print("Yes")
+                    return
+
+
     print("No")
 
 

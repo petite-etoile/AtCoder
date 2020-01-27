@@ -39,6 +39,18 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    H, N = MI()
+    AB = LLIN(N)
+
+    dp = [inf]*(H+1)
+    dp[0] = 0
+    for a,b in AB:
+        for h in range(H+1):
+            if h>=a:
+                dp[h] = min(dp[h], dp[h-a] + b)
+            else:
+                dp[h] = min(dp[h], b)
+
+    print(dp[H])
 if __name__ == '__main__':
     main()
