@@ -19,6 +19,7 @@ from itertools import accumulate,permutations,combinations,product,combinations_
 from bisect import bisect_left,bisect_right
 from copy import deepcopy
 from fractions import gcd
+def ceil(a,b): return (a+b-1)//b
 inf=float('inf')
 mod = 10**9+7
 def pprint(*A): 
@@ -37,25 +38,23 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
+def LOG(x):
+    res = 0
+    while x%2==0:
+        res += 1
+        x //= 2
+    return res
 def main():
     N,X = MI()
     A=sorted(LI())
     lcm = 1
-    odd = False
-    even = False
+    count_2 = LOG(A[0]//2)
     for a in A:
         a//=2
-        if a&1:
-            odd=True
-        else:
-            even = True
-        if odd and even:
+        lcm = a*lcm//gcd(a,lcm)
+        if count_2!=LOG(a) or X<lcm:
             print(0)
             return
-        if lcm > X:
-            print(0)
-            return
-        lcm = lcm//gcd(a,lcm)*a
-    print(ceil(X//lcm/2))
+    print(ceil(X//lcm,2))
 if __name__ == '__main__':
     main()

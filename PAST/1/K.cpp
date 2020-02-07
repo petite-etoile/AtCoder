@@ -223,11 +223,7 @@ int main(){
             edge[p-1].emplace_back(i);
         }
     }
-    SegmentTree<pair<int,int>> S;(
-        [](pair<int,int> a,pair<int,int> b)->pair<int,int>{
-            return min(a,b);
-        }, make_pair(__INT_MAX__,-1)
-    );
+    
     LowestCommonAncestor LCA(edge, root);
 
     int Q;

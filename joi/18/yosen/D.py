@@ -12,12 +12,15 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-from math import floor,ceil,sqrt,factorial,hypot,log #log2ないｙｐ
-from heapq import heappop, heappush, heappushpop, heapify
+from math import floor,sqrt,factorial,hypot,log #log2ないｙｐ
+from heapq import heappop, heappush, heappushpop
 from collections import Counter,defaultdict,deque
 from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
 from bisect import bisect_left,bisect_right
 from copy import deepcopy
+from fractions import gcd
+from random import randint
+def ceil(a,b): return (a+b-1)//b
 inf=float('inf')
 mod = 10**9+7
 def pprint(*A): 
@@ -37,46 +40,28 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N=I()
-    C=LI()
-    Q=I()
-    S=LLIN(Q)
-    odd = C[1::2]
-    even = C[::2]
-    all_ = C.copy()
-    heapify(odd)
-    heapify(even)
-    heapify(all_)
-    all_sub = 0
-    even_sub = 0
+    N = I()
+    L = LIN(N)
+    cumsum = [0] + list(accumulate(L))
+    can_length = set()
+    for l in range(N):
+        for r in range(l+1,N+1):
+            can_length.add(cumsum[r] - cumsum[l])
 
-    ans = 0
-    for q,*s in S:
-        if q==1:
-            x,a = s
-            x-=1
-            if (x%2==0):
-                if (C[x]-all_sub-even_sub)>=a:
-                    C[x]-=a
-                    heappush(all_,C[x])
-                    heappush(even,C[x])
-                    ans += a
-            else:
-                if (C[x]-all_sub)>=a:
-                    C[x]-=a
-                    heappush(all_,C[x])
-                    ans += a
-        else:
-            a = s[0]
-            if q==2:
-                if even[0]-all_sub-even_sub>=a:
-                    even_sub+=a
-                    ans += a*ceil(N/2)
-            else:
-                mini = min(even[0]-all_sub-even_sub,all_[0]-all_sub)
-                if mini>=a:
-                    all_sub+=a
-                    ans += a*N
+    can_length = sorted(can_length)[:-1]
+    ans = inf
+    for min_len in can_length:
+        dp = [inf]*N #dp[i] := i番目まででmin以上の切り方で最大の長さ最小
+        for i in range(N):
+            if min_len <= cumsum[i+1] and i!=N-1:
+                dp[i] = cumsum[i+1]
+            for j in range(i):
+                if min_len <= cumsum[i+1]-cumsum[j+1]:
+                    dp[i] = min(dp[i], max(cumsum[i+1]-cumsum[j+1], dp[j]))
+        ans = min(ans, dp[-1]-min_len)
     print(ans)
+
+            
+    
 if __name__ == '__main__':
     main()

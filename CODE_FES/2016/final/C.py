@@ -1,3 +1,5 @@
+
+
 #
 # 　　  ⋀_⋀　 
 #　　  (･ω･)  
@@ -39,40 +41,58 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
-# 約数列挙
-def find_divisor(n):
-    divisors=[]
-    for i in range(1, int(sqrt(n)) + 1):
-        if n % i == 0:
-            divisors.append(i)
-            if i*i!=n:
-                divisors.append(n // i)
-    return divisors
+# UnionFind
+class UnionFind():
+    def __init__(self, n):
+        self.nodes=[-1] * n  # nodes[x]: 負なら、絶対値が木の要素数
 
+    def get_root(self, x):
+        # nodes[x]が負ならxが根
+        if self.nodes[x] < 0:
+            return x
+        # 根に直接つなぎ直しつつ、親を再帰的に探す
+        else:
+            self.nodes[x]=self.get_root(self.nodes[x])
+            return self.nodes[x]
+
+    def unite(self, x, y):
+        root_x=self.get_root(x)
+        root_y=self.get_root(y)
+        # 根が同じなら変わらない
+        # if root_x == root_y:
+        # pass
+        if root_x != root_y:
+            # 大きい木の方につないだほうが計算量が減る
+            if self.nodes[root_x] < self.nodes[root_y]:
+                big_root=root_x
+                small_root=root_y
+            else:
+                small_root=root_x
+                big_root=root_y
+            self.nodes[big_root] += self.nodes[small_root]
+            self.nodes[small_root]=big_root
 
 def main():
     N,M = MI()
-    A = LI()
-    S = sum(A)
-    pri = find_divisor(S)
-    ans = 0
-    for p in pri:
-        
-        B = [a%p for a in A]
-        B.sort()
-        B_rev = [b-p if b else 0 for b in B ]
-        *cumsum, = accumulate(B)
-        cumsum_rev = [0]*(N+1)
-        now = 0
-        for i in range(N)[::-1]:
-            now += B_rev[i]
-            cumsum_rev[i] = now
-        
-        for i in range(N):
-            if (cumsum[i] + cumsum_rev[i+1]) % p == 0:
-                c = max(cumsum[i], -cumsum_rev[i+1])
-                if c<=M:
-                    ans = max(ans, p)
-    print(ans)
+
+    """
+    全員が誰かと言語で話せて、それが連結ならOK
+    """
+    uf=UnionFind(N+M)
+    get_root, unite, nodes=uf.get_root, uf.unite, uf.nodes
+
+    for i in range(N):
+        _,*L = MI_()
+        for l in L:
+            unite(l+N, i)
+    
+    r = get_root(0)
+    for i in range(N):
+        if r!=get_root(i):
+            print("NO")
+            return
+
+    print("YES")
+
 if __name__ == '__main__':
     main()

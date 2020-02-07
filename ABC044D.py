@@ -12,12 +12,15 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-from math import floor,ceil,sqrt,factorial,hypot,log #log2ないｙｐ
-from heapq import heappop, heappush, heappushpop, heapify
+from math import floor,sqrt,factorial,hypot,log #log2ないｙｐ
+from heapq import heappop, heappush, heappushpop
 from collections import Counter,defaultdict,deque
 from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
 from bisect import bisect_left,bisect_right
 from copy import deepcopy
+from fractions import gcd
+from random import randint
+def ceil(a,b): return (a+b-1)//b
 inf=float('inf')
 mod = 10**9+7
 def pprint(*A): 
@@ -37,46 +40,31 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N=I()
-    C=LI()
-    Q=I()
-    S=LLIN(Q)
-    odd = C[1::2]
-    even = C[::2]
-    all_ = C.copy()
-    heapify(odd)
-    heapify(even)
-    heapify(all_)
-    all_sub = 0
-    even_sub = 0
+    N = I()
+    S = I()
+    
+    if N==S:
+        print(N+1)
+        return 
 
-    ans = 0
-    for q,*s in S:
-        if q==1:
-            x,a = s
-            x-=1
-            if (x%2==0):
-                if (C[x]-all_sub-even_sub)>=a:
-                    C[x]-=a
-                    heappush(all_,C[x])
-                    heappush(even,C[x])
-                    ans += a
-            else:
-                if (C[x]-all_sub)>=a:
-                    C[x]-=a
-                    heappush(all_,C[x])
-                    ans += a
-        else:
-            a = s[0]
-            if q==2:
-                if even[0]-all_sub-even_sub>=a:
-                    even_sub+=a
-                    ans += a*ceil(N/2)
-            else:
-                mini = min(even[0]-all_sub-even_sub,all_[0]-all_sub)
-                if mini>=a:
-                    all_sub+=a
-                    ans += a*N
-    print(ans)
+    def check(N,b):
+        res = 0
+        while N:
+            res += N%b
+            N//=b
+        return res == S
+
+
+    for b in range(2,int(sqrt(N)+1)):
+        if check(N,b):
+            print(b)
+            return
+    for p in range(1,int(sqrt(N)+1))[::-1]:
+        b = (N-S+p)//p
+        if b>=2 and check(N,b):
+            print(b)
+            return
+    print(-1)
+
 if __name__ == '__main__':
     main()
