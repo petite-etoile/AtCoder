@@ -41,6 +41,9 @@ def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
     N=I()
-    E=LLIN(N)
+    S=ST()
+    ans = S.count("B")%2 + S.count("G")%2 + S.count("R")%2 
+    print(ans)
+
 if __name__ == '__main__':
     main()

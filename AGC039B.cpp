@@ -8,12 +8,15 @@
 　　 |　 /
 　　 UU
 */
+#pragma region macro
 #include <bits/stdc++.h>
+typedef long long int64;
 using namespace std;
-#define int long long
-typedef long long ll;
+using P = pair<int64, int64>;
+typedef vector<int> vi;
 const int MOD = (int)1e9 + 7;
-const int INF = 1LL << 60;
+const int64 INF = 1LL << 62;
+const int inf = 1<<30;
 template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
 template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
 #define REP(i, n) for (int i = 0; i < (n); i++)
@@ -21,6 +24,7 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 #define ALL(obj) (obj).begin(), (obj).end() //コンテナじゃないと使えない!!
 #define debug(x) cerr << #x << ": " << x << "\n";
 #define mp make_pair
+#define bn '\n'
 template <typename T>
 ostream& operator<<(ostream& os, vector<T> &V){
     int N = V.size();
@@ -31,13 +35,14 @@ ostream& operator<<(ostream& os, vector<T> &V){
     os << "\n";
     return os;
 }
-template <typename T>
-ostream& operator<<(ostream& os, pair<T,T> &P){
-os << P.first;
-os << " ";
-os << P.second;
-os << "\n";
-return os;
+template <typename T,typename S>
+ostream& operator<<(ostream& os, pair<T,S> const&P){
+    os << "(";
+    os << P.first;
+    os << " , ";
+    os << P.second;
+    os << ")";
+    return os;
 }
 template <typename T>
 ostream& operator<<(ostream& os, set<T> &S){
@@ -59,69 +64,69 @@ ostream& operator<<(ostream& os, deque<T> &q){
      os<<endl;
     return os;
 }
-bool dfs(int s,vector<vector<int>>& edge,vector<int>& d){
-    int N = edge.size();
-    bool res = false;
-    for(auto to:edge[s]){
-        if(d[to]!=INF) {
-            if((d[s]-d[to]) %2 == 0) {
-                return true; 
+vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
+#pragma endregion
+//fixed<<setprecision(10)<<ans<<endl;
+
+bool dfs(int s, vector<vector<int>>& edge, vector<int>& dist){
+    stack<int> st;
+    st.push(s);
+    while(not st.empty()){
+        int v = st.top(); st.pop();
+        for(auto u:edge[v]){
+            if(dist[u]!=inf){
+                if((dist[v]-dist[u])&1) continue;
+                return true; //奇閉路
             }
-            else continue;
+            dist[u]=dist[v]+1;
+            st.push(u);
         }
-        d[to]=d[s]+1;
-        bool b = dfs(to,edge,d);
-        if(b){ return true;}
     }
-    return res;
+    return false;
 }
-int bfs(int s,vector<vector<int>>& edge){
+
+int bfs(int s, vector<vector<int>>& edge){
     int N = edge.size();
-    vector<int> dist(N,INF);
-    queue<int> q; q.push(s);
-    vector<bool> visited(N,0);
-    visited[s]=1;
-    dist[s]=0;
-    int res=0;
-    while(!q.empty()){
+    queue<int> q;
+    q.push(s);
+    vector<int> dist(N,inf); dist[s]=1;
+
+    int res = 0;
+    while(not q.empty()){
         int v = q.front(); q.pop();
         for(auto u:edge[v]){
-            if(dist[u]!=INF) continue;
-            q.push(u); dist[u] = dist[v]+1;
-            chmax(res,dist[u]+1);
+            if(dist[u]!=inf) continue;
+            q.push(u);
+            dist[u] = dist[v]+1;
+            chmax(res, dist[u]);
         }
     }
     return res;
 }
-//fixed<<setprecision(10)<<ans<<endl;
-signed main(){
+
+int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
     int N;
     cin >> N;
-    string s;
     vector<vector<int>> edge(N);
     REP(i,N){
-        cin >> s;
+        string t; cin >> t;
         REP(j,N){
-            if(s[j]=='0') continue;
-            int to = j;
-            edge[i].push_back(j);
-            edge[j].push_back(i);
+            if(t[j]=='1') edge[i].emplace_back(j);
         }
     }
-    //奇閉路検出
-    vector<int> d(N,INF);
-    d[0]=0;
-    bool b = dfs(0,edge,d);
-    if(b){
-        cout << -1 << endl;
-        exit(0);
+
+    vector<int> dist(N,inf);
+    dist[0]=0;
+    if(dfs(0,edge,dist)){
+        cout << -1 << bn;
+        return 0;
     }
 
     int ans=0;
     REP(i,N){
-        chmax(ans,bfs(i,edge));
+        chmax(ans, bfs(i,edge));
     }
 
     cout << ans << endl;

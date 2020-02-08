@@ -40,18 +40,42 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    correct_notA = ["KIH","B","R",""]
-    set_c = set()
-    for i in range(1<<4):
-        res = ""
-        for j in range(4):
-            if i>>j&1:
-                res += "A"
-            res += correct_notA[j]
-        set_c.add(res)
-
-    S = ST()
-    print(["YES","NO"][S not in set_c])
-
+    d = {
+        "b":"1",
+        "c":"1",
+        "t":"3",
+        "j":"3",
+        "l":"5",
+        "v":"5",
+        "p":"7",
+        "m":"7",
+        "n":"9",
+        "g":"9",
+        "d":"2",
+        "w":"2",
+        "f":"4",
+        "q":"4",
+        "s":"6",
+        "x":"6",
+        "h":"8",
+        "k":"8",
+        "z":"0",
+        "r":"0",
+        " ":" ",
+    }
+    N=I()
+    S=ST()
+    ans = ""
+    for s in S:
+        s=s.lower()
+        if s in d:
+            if s!=" " or ans:
+                ans += d[s]
+    while "  " in ans:
+        ans = ans.replace("  "," ")
+    if ans and ans[-1]==" ":
+        print(ans[:-1])
+    else:
+        print(ans)
 if __name__ == '__main__':
     main()
