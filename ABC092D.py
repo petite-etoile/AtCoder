@@ -40,25 +40,30 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    A=I()
-    X = A**2
-    Y = (A+1)**2-1
-    ans = X
-    while X <= Y:
-        ans = X
-        
-        r = X%100
-        X//=100
-        if r: X+=1
+    A,B=MI_()
+    H,W=100,100
+    print(H,W)
+    ans = [[""]*W for _ in range(H)]
+    for i in range(H):
+        if i<H//2:
+            ans[i] = ["#"]*W
+        else:
+            ans[i] = ["."]*W
 
-        Y//=100
-
-    print(ans)
-    
-
-
-
-
+    for i in range(H):
+        for j in range(W):
+            if i&1 or j&1:
+                continue
+            if i<H//2:
+                if A:
+                    ans[i][j] = "."
+                    A-=1
+            else:
+                if B:
+                    ans[H+49-i][j] = "#"
+                    B-=1
+    for a in ans:
+        print(*a,sep="")
 
 if __name__ == '__main__':
     main()

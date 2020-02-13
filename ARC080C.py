@@ -40,25 +40,15 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    A=I()
-    X = A**2
-    Y = (A+1)**2-1
-    ans = X
-    while X <= Y:
-        ans = X
-        
-        r = X%100
-        X//=100
-        if r: X+=1
-
-        Y//=100
-
-    print(ans)
-    
-
-
-
-
-
+    N=I()
+    A=LI()
+    c = [0]*5
+    for a in A:
+        c[a%4]+=1
+    if N//2<=c[0]:
+        print("Yes")
+        return 
+    N-=c[0]*2
+    print(["No","Yes"][N<=c[2]])
 if __name__ == '__main__':
     main()

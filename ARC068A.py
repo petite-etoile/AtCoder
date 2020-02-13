@@ -40,25 +40,13 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    A=I()
-    X = A**2
-    Y = (A+1)**2-1
-    ans = X
-    while X <= Y:
-        ans = X
-        
-        r = X%100
-        X//=100
-        if r: X+=1
-
-        Y//=100
-
+    X=I()
+    ans = X//11*2
+    X%=11
+    if 0<X<=6:
+        ans += 1
+    elif 6<X:
+        ans += 2
     print(ans)
-    
-
-
-
-
-
 if __name__ == '__main__':
     main()

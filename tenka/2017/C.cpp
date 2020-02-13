@@ -78,24 +78,18 @@ int main(){
     cin >> N;
 
     int upper = 3500;
-    int64 G,numerator,denomirator,G2,numerator2,denomirator2;
-    for(int h=1;h<=upper;h++){
-        for(int n=h;n<=upper;n++){
-            G = gcd(h,n);
-            numerator = h/G + n/G;
-            denomirator = h/G*n;
+    int64 numerator,denomirator;
+    for(int64 h=1;h<=upper;h++){
+        for(int64 n=h;n<=upper;n++){
+            numerator = 4*h*n - N*n - N*h;
+            denomirator = h*n*N;
 
-            G2 = gcd(denomirator, N);
-            numerator2 = 4*denomirator/G2 - numerator*N/G2;
-            denomirator2 = denomirator*N/G2;
-
-            // cout << mp(h,n) << endl;
-            // cout << G << " " << numerator << " " << denomirator << " " << G2 << " " << numerator2 << " " << denomirator2 << endl;
-
-            if (numerator2 && gcd(numerator2, denomirator2)==numerator2 && denomirator2/numerator2>0){
-                cout << h << " " << n << " " << denomirator2/numerator2 << endl;
+            if(numerator <= 0 or denomirator <= 0) continue;
+            if(denomirator%numerator==0){
+                cout << h << " " << n << " " << denomirator/numerator << "\n";
                 return 0;
             }
+
         }
     }    
 }

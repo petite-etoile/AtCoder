@@ -40,25 +40,39 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    A=I()
-    X = A**2
-    Y = (A+1)**2-1
-    ans = X
-    while X <= Y:
-        ans = X
-        
-        r = X%100
-        X//=100
-        if r: X+=1
-
-        Y//=100
-
-    print(ans)
+    # ワーシャルフロイド
+    def warshall_floyd(d, N):
+        for k in range(N):
+            for i in range(N):
+                for j in range(N):
+                    d[i][j]=min(d[i][j], d[i][k] + d[k][j])
     
+    N=I()
+    A=LLIN(N)
+    d=deepcopy(A)
+    warshall_floyd(d, N)
 
+    edge = []
+    for i in range(N):
+        for j in range(i+1,N):
+            edge.append((A[i][j],i,j))
+    edge.sort()
 
-
-
-
+    ans = 0
+    for a,i,j in edge:
+        if d[i][j]<a:
+            print(-1)
+            return
+        need = True
+        for k in range(N):
+            if k in (i,j):
+                continue
+            if a==d[i][k]+d[k][j]:
+                need = False
+                break
+        if need:
+            ans += a
+    print(ans)
+        
 if __name__ == '__main__':
     main()

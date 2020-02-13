@@ -40,42 +40,24 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    d = {
-        "b":"1",
-        "c":"1",
-        "t":"3",
-        "j":"3",
-        "l":"5",
-        "v":"5",
-        "p":"7",
-        "m":"7",
-        "n":"9",
-        "g":"9",
-        "d":"2",
-        "w":"2",
-        "f":"4",
-        "q":"4",
-        "s":"6",
-        "x":"6",
-        "h":"8",
-        "k":"8",
-        "z":"0",
-        "r":"0",
-        " ":" ",
-    }
-    N=I()
+    N = I()
     S=ST()
-    ans = ""
-    for s in S:
-        s=s.lower()
-        if s in d:
-            if s!=" " or ans:
-                ans += d[s]
-    while "  " in ans:
-        ans = ans.replace("  "," ")
-    if ans and ans[-1]==" ":
-        print(ans[:-1])
-    else:
-        print(ans)
+    ans = [0]*N #True -> W
+    for mask in range(4):
+        ans[0] = bool(mask&1)
+        ans[1] = bool(mask&2)
+        for i in range(2,N):
+            if (S[i-1]=="o") ^ ans[i-1]:
+                ans[i] = ans[i-2]
+            else:
+                ans[i] = ans[i-2] ^ True
+        ok = True
+        for i in range(N):
+            if ((S[i] == "o") ^ ans[i]) ^ (ans[(i+1)%N] == ans[i-1]):
+                ok = False
+        if ok:
+            print(*["W" if a else "S" for a in ans ],sep="")
+            return 
+    print(-1)
 if __name__ == '__main__':
     main()

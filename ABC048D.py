@@ -40,24 +40,22 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    A=I()
-    X = A**2
-    Y = (A+1)**2-1
-    ans = X
-    while X <= Y:
-        ans = X
+    S=ST()
+    """
+        ababababa
+        bababba
+        のどちらかで終わる
+        両端が同じなら上
+        そうでないなら下のようになる
         
-        r = X%100
-        X//=100
-        if r: X+=1
+        つまり両端が同じなら奇数長になり
+        そうでないなら偶数長になる
+    """
 
-        Y//=100
-
-    print(ans)
-    
-
-
-
+    if (len(S)&1) == (S[0]==S[-1]):
+        print("Second")
+    else:
+        print("First")
 
 
 if __name__ == '__main__':
