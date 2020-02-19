@@ -40,15 +40,36 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    C=LLIN(3)
-    A=[C[0][i]-C[0][0] for i in range(3)]
-    B=[C[1][i]-C[1][0] for i in range(3)]
-    C=[C[2][i]-C[2][0] for i in range(3)]
-    if A==B==C:
-        print("Yes")
-    else:
-        print("No")
+    S=[int(s) for s in ST()[::-1]]
+    T=S.copy()
+    ans = 0
+    flag = False
+    for i,s in enumerate(S):
+        t=S[i]
+        if t>=10:
+            try:
+                S[i+1]+=1
+            except:
+                flag = True
+            t-=10
+        if t>5:
+            ans += 10-t
+            try:
+                S[i+1]=(S[i+1]+1)
+            except:
+                flag = True
+        elif t!=5:
+            ans += t
+        else: #5
+            ans += t
+            try:
+                if S[i+1]>=5:
+                    S[i+1] += 1
+            except:
+                pass
+    print(ans+int(flag))
 
 
 if __name__ == '__main__':
     main()
+

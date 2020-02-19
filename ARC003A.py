@@ -40,15 +40,13 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    C=LLIN(3)
-    A=[C[0][i]-C[0][0] for i in range(3)]
-    B=[C[1][i]-C[1][0] for i in range(3)]
-    C=[C[2][i]-C[2][0] for i in range(3)]
-    if A==B==C:
-        print("Yes")
-    else:
-        print("No")
-
+    N=I()
+    S=ST()
+    C=Counter(S)
+    
+    ans = 0
+    ans += 4*C["A"] + 3*C["B"] + 2*C["C"] + C["D"]
+    print(ans/N)
 
 if __name__ == '__main__':
     main()

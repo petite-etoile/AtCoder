@@ -40,15 +40,17 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    C=LLIN(3)
-    A=[C[0][i]-C[0][0] for i in range(3)]
-    B=[C[1][i]-C[1][0] for i in range(3)]
-    C=[C[2][i]-C[2][0] for i in range(3)]
-    if A==B==C:
-        print("Yes")
-    else:
-        print("No")
-
-
+    N=I()
+    C=ST()
+    ans = inf
+    button = "ABXY"
+    for i in range(4):
+        for j in range(4):
+            for k in range(4):
+                for l in range(4):
+                    L = button[i]+button[j]
+                    R = button[k]+button[l]
+                    ans = min(ans, len(C.replace(L,"L").replace(R,"R")))
+    print(ans)
 if __name__ == '__main__':
     main()

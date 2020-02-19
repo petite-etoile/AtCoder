@@ -39,16 +39,18 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
-def main():
-    C=LLIN(3)
-    A=[C[0][i]-C[0][0] for i in range(3)]
-    B=[C[1][i]-C[1][0] for i in range(3)]
-    C=[C[2][i]-C[2][0] for i in range(3)]
-    if A==B==C:
-        print("Yes")
-    else:
-        print("No")
 
+def main():
+    N=I()
+    A=LIN(N)
+    now = 1
+    ans = A[0]-1
+    for a in A[1:]:
+        if a <= now + 1:
+            now = max(a,now)
+            continue
+        ans += (a-1)//(now+1)
+    print(ans)
 
 if __name__ == '__main__':
     main()

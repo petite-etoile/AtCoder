@@ -40,15 +40,19 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    C=LLIN(3)
-    A=[C[0][i]-C[0][0] for i in range(3)]
-    B=[C[1][i]-C[1][0] for i in range(3)]
-    C=[C[2][i]-C[2][0] for i in range(3)]
-    if A==B==C:
-        print("Yes")
-    else:
-        print("No")
-
+    N=I()
+    S=[ST() for _ in range(N)]
+    d = defaultdict(int)
+    ma = 0
+    for s in S:
+        d[s]+=1
+        ma = max(ma, d[s])
+    ans = []
+    for s,v in d.items():
+        if v==ma:
+            ans.append(s)
+    ans.sort()
+    print(*ans,sep="\n")
 
 if __name__ == '__main__':
     main()
