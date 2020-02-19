@@ -44,12 +44,12 @@ def main():
     *cumsum,=accumulate(A)
     for i,a in enumerate(cumsum):
         cumsum[i] = a%K
-    # print(cumsum)
     for i,a in enumerate(cumsum):
         if i >= K:
             before[cumsum[i-K]]-=1
         ans += before[a]
         before[a]+=1
+
 
     ans += cumsum[:K-1].count(0)
     print(ans)

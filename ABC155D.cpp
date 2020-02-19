@@ -70,46 +70,71 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 
 
 
+vector<long double> plus_vec,minus_vec,zeros;
+int64 K;
+//X"以下"の数がk-1個以下
+bool is_low(int64 X){
+    if(X==0) return int64(plus_vec.size()) * minus_vec.size() + int64(zeros.size())*(zeros.size()-1)/2 + int64(zeros.size()) * (plus_vec.size()+minus_vec.size())< K;
+    int64 low_cnt = 0;
+
+    for(auto a:plus_vec){
+        long double need = abs(X)/a;
+        if(X<0){
+            low_cnt += minus_vec.end() - lower_bound(ALL(minus_vec), need);
+        }else if(X>0){
+            low_cnt += upper_bound(ALL(plus_vec) , need) - plus_vec.begin();
+            low_cnt += minus_vec.size();
+            if(a*a<=X) low_cnt--;
+            low_cnt += zeros.size() * 2;
+        }
+    }
+
+
+    for(auto a:minus_vec){
+        long double need = abs(X)/a;
+        if(X<0){
+            low_cnt += plus_vec.end() - lower_bound(ALL(plus_vec) , need);
+        }else if(X>0){
+            low_cnt += upper_bound(ALL(minus_vec), need) - minus_vec.begin();
+            low_cnt += plus_vec.size();
+            if(a*a<=X) low_cnt--;
+            low_cnt += zeros.size() * 2;
+        }
+    }
+    if(X>0) low_cnt += int64(zeros.size()) * (zeros.size() - 1) ; 
+
+    low_cnt /= 2;
+    
+    return low_cnt < K;
+}
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
     int N;
-    cin >> N;
-    vector<int64> A(2*N);
-    REP(i,N) cin >> A[i];
-    REP(i,N) A[i+N] = A[i];
-
-    vector<vector<int64>> DP(N,vector<int64>(N,0)); //DP[i][j] = [i,j]のケーキを最適に取った時の
-    REP(i,N) DP[i][i] = A[i], DP[i][(i+1)%N] = max(A[i],A[i+1]);
-
-    for(int len=3;len<=N;len++){
-        REP(l, N){
-            int r = l + len - 1;
-            
-            //lを取る
-            if(A[(l+1)%N] > A[r%N]){
-                chmax(DP[l][r%N], A[l] + DP[(l+2)%N][r%N]);
-            }else{
-                chmax(DP[l][r%N], A[l] + DP[(l+1)%N][(r-1+N)%N]);
-            }
-
-            //rを取る
-            if(A[l] > A[(r-1+N)%N]){
-                chmax(DP[l][r%N], A[r] + DP[(l+1)%N][(r-1+N)%N]);
-            }else{
-                chmax(DP[l][r%N], A[r] + DP[l][(r-2+N)%N]);
-            }
-        }
+    cin >> N >> K;
+    
+    vector<int64> A(N);
+    REP(i,N){
+        cin >> A[i];
+        if (A[i]>0) plus_vec.emplace_back(A[i]);
+        else if(A[i]==0) zeros.emplace_back(0);
+        else minus_vec.emplace_back(-A[i]);
     }
 
-    int64 ans=0;
-    REP(l,N){
-        int r = l+N-1;
-        chmax(ans, DP[l][r%N]);
+    sort(ALL(minus_vec));
+    sort(ALL(plus_vec));
+
+    int64 low = -1e18, high = 1e18+1;
+    while(high-low>1){
+        int64 mid = (high+low)/2;
+        if(is_low(mid)) low = mid;
+        else high = mid;
     }
 
+    int64 ans=high;
     cout << ans << endl;
 }
+
 
 // /*
 // 　　　∫ ∫ ∫
@@ -182,37 +207,64 @@ int main(){
 // //fixed<<setprecision(10)<<ans<<endl;
 
 
+// bool low_cnt_less_than_K(int64 X);
 
+// int64 K;
+// vector<int64> A;
 // int main(){
 //     cin.tie(0);
 //     ios::sync_with_stdio(false);
 //     int N;
-//     cin >> N;
-//     vector<int64> A(2*N);
-//     REP(i,N) cin >> A[i];
-//     REP(i,N) A[i+N] = A[i];
+//     cin >> N >> K;
+    
+//     A.resize(N);
+//     REP(i,N)  cin >> A[i];
+//     sort(ALL(A));
 
-//     vector<int64> cumsum(2*N+1,0);
-//     REP(i,2*N) cumsum[i+1] = cumsum[i] + A[i];
+//     int64 low = -1e18-1, high = 1e18+1;
+//     while(high-low>1){
+//         int64 mid = (high+low)/2;
+//         if(low_cnt_less_than_K(mid)) low = mid;
+//         else high = mid;
+//     }
 
-//     debug(cumsum)
+//     int64 ans=high;
+//     cout << ans << endl;
+// }
 
-//     vector<vector<int64>> DP(N,vector<int64>(N,0)); //DP[i][j] = [i,j]のケーキを最適に取った時の
-//     REP(i,N) DP[i][i] = A[i];
-//     for(int len=2;len<=N;len++){
-//         REP(l, N){
-//             int r = l + len - 1;
-//             DP[l][r%N] = max(A[l]+cumsum[r+1] - cumsum[l+1] - DP[(l+1)%N][r%N],   A[r]+cumsum[r] - cumsum[l] - DP[l][(r-1)%N] );
+
+// //X"以下"の数がk-1個以下
+// bool low_cnt_less_than_K(int64 X){
+//     int N = A.size();
+//     int64 low_cnt = 0;
+//     REP(i,N-1){
+//         int64 a = A[i];
+//         if(a==0){
+//             if(X>=0) low_cnt+=N-i-1;
+//         }else if(a > 0){
+//             int64 lower_b = i, upper_b = N;
+//             while(upper_b-lower_b>1){
+//                 int64 mid = (upper_b+lower_b)/2;
+//                 if(A[mid] * a <= X){
+//                     lower_b = mid;
+//                 }else{
+//                     upper_b = mid;
+//                 }
+//             }
+//             low_cnt += upper_b - i - 1;   
+//         }else{
+//             int64 lower_b = i, upper_b = N;
+//             while(upper_b-lower_b>1){
+//                 int64 mid = (upper_b+lower_b)/2;
+//                 if(A[mid] * a <= X){
+//                     upper_b = mid;
+//                 }else{
+//                     lower_b = mid;
+//                 }
+//             }
+//             low_cnt += N - upper_b;
 //         }
 //     }
-
-//     cout << " " << (DP);
-
-//     int64 ans=0;
-//     REP(l,N){
-//         int r = l+N-1;
-//         chmax(ans, DP[l][r%N]);
-//     }
-
-//     cout << ans << endl;
+    
+//     return low_cnt < K;
 // }
