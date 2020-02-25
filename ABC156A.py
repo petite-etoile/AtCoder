@@ -40,15 +40,10 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,Q=MI()
-    S=ST()
-    cumsum = [0]*N
-    for i in range(N-1):
-        if S[i:i+2]=="AC":
-            cumsum[i+1]+=1
-        cumsum[i+1]+=cumsum[i]
-    for _ in range(Q):
-        l,r = MI()
-        print(cumsum[r-1]-cumsum[l-1])
+    N,K=MI()
+    if N>=10:
+        print(K)
+    else:
+        print(K+100*(10-N))
 if __name__ == '__main__':
     main()

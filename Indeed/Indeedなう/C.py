@@ -40,15 +40,26 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,Q=MI()
-    S=ST()
-    cumsum = [0]*N
-    for i in range(N-1):
-        if S[i:i+2]=="AC":
-            cumsum[i+1]+=1
-        cumsum[i+1]+=cumsum[i]
-    for _ in range(Q):
-        l,r = MI()
-        print(cumsum[r-1]-cumsum[l-1])
+    MAX_abl = 100
+    DP=[[[0]*(MAX_abl+1) for _ in range(MAX_abl+1)] for _ in range(MAX_abl+1)]
+    N,M=MI()
+    for _ in range(N):
+        a,b,c,w = MI()
+        DP[a][b][c] = max(DP[a][b][c], w)
+
+    #DP[a][b][c] = max(DP[a-1][b][c], DP[a][b-1][c], DP[a][b][c-1])
+    for a in range(MAX_abl+1):
+        for b in range(MAX_abl+1):
+            for c in range(MAX_abl+1):
+                if a:
+                    DP[a][b][c] = max(DP[a][b][c], DP[a-1][b][c])
+                if b:
+                    DP[a][b][c] = max(DP[a][b][c], DP[a][b-1][c])
+                if c:
+                    DP[a][b][c] = max(DP[a][b][c], DP[a][b][c-1])
+    for _ in range(M):
+        a,b,c = MI()
+        print(DP[a][b][c])
+        
 if __name__ == '__main__':
     main()

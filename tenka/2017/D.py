@@ -40,15 +40,30 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,Q=MI()
-    S=ST()
-    cumsum = [0]*N
-    for i in range(N-1):
-        if S[i:i+2]=="AC":
-            cumsum[i+1]+=1
-        cumsum[i+1]+=cumsum[i]
-    for _ in range(Q):
-        l,r = MI()
-        print(cumsum[r-1]-cumsum[l-1])
+    N,K=MI()
+    K_bin = bin(K)[2:]
+    AB=LLIN(N)
+
+    ans = 0
+    for a,b in AB:
+        if a&K==a:
+            ans += b
+
+    for i in range(len(K_bin)):
+        if K_bin[i]=="0":
+            continue
+        i_inv = len(K_bin)-(i+1)
+        res = 0
+        k = K - (1<<i_inv)
+        for a,b in AB:
+            left_a = (a>>i_inv<<i_inv) #上位i+1bit            
+            if left_a&k==left_a:
+                res += b
+            else:
+                continue
+        ans = max(ans, res)
+    print(ans)
+
+
 if __name__ == '__main__':
     main()

@@ -40,15 +40,38 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,Q=MI()
-    S=ST()
-    cumsum = [0]*N
-    for i in range(N-1):
-        if S[i:i+2]=="AC":
-            cumsum[i+1]+=1
-        cumsum[i+1]+=cumsum[i]
-    for _ in range(Q):
-        l,r = MI()
-        print(cumsum[r-1]-cumsum[l-1])
+    H,W=MI()
+    ans = inf
+    for w in range(1,W):
+        A=w*H
+        remain = H*W-A
+        B=remain//(W-w)//2*(W-w)
+        C=remain-B
+        ans = min(ans, max(A,B,C)-min(A,B,C))
+    for h in range(1,H):
+        A=h*W
+        remain = W*H-A
+        B=remain//(H-h)//2*(H-h)
+        C=remain-B
+        ans = min(ans, max(A,B,C)-min(A,B,C))
+    if W%3==0 or H%3==0:
+        print(0)
+        return
+    A = H//3*W
+    if A:
+        remain = H*W-A
+        B=remain//2
+        C=remain-B
+        ans = min(ans, max(A,B,C)-min(A,B,C))
+    
+    A = W//3*H
+    if A:
+        remain = W*H-A
+        B=remain//2
+        C=remain-B
+        ans = min(ans, max(A,B,C)-min(A,B,C))
+    
+
+    print(ans)
 if __name__ == '__main__':
     main()

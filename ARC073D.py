@@ -40,15 +40,35 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,Q=MI()
-    S=ST()
+    N,W=MI()
+    WV=LLIN(N)
+    W0 = WV[0][0]
+    for i,(w,v) in enumerate(WV):
+        WV[i][0] = w-W0
+    WV.sort(key=lambda x: x[1], reverse=True)
     cumsum = [0]*N
-    for i in range(N-1):
-        if S[i:i+2]=="AC":
-            cumsum[i+1]+=1
-        cumsum[i+1]+=cumsum[i]
-    for _ in range(Q):
-        l,r = MI()
-        print(cumsum[r-1]-cumsum[l-1])
+    for i,(w,v) in enumerate(WV):
+        cumsum[i]=cumsum[i-1]+v
+
+    dp = [[0]*(N*3+1) for _ in range(N+1)]
+    for i in range(N):
+        for k in range(1,N+1)[::-1]:
+            for w in range(N*3+1):
+                if w>=WV[i][0]:
+                    dp[k][w] = max(dp[k][w], dp[k-1][w-WV[i][0]] + WV[i][1])
+
+    ans = 0 
+    for k in range(1,N+1):
+        W_k = W-W0*k
+        if W_k>=N*3:
+            ans = max(ans, cumsum[k-1])
+            continue
+        if W_k<0:
+            break   
+        ans = max(ans, dp[k][W_k])
+    print(ans)
+
+
+
 if __name__ == '__main__':
     main()
