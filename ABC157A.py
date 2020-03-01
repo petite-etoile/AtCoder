@@ -40,24 +40,7 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    #28*2*(10^5)*log2(10^5)
     N=I()
-    A=LI()
-    B=sorted(LI())
-    ans = 0
-    for k in range(28):
-        A_ = [a&((1<<(k+1))-1) for a in A]
-        B_ = [a&((1<<(k+1))-1) for a in B]
-        B_.sort()
-        cnt = 0
-        for a in A_:
-            #2**K <= a+b < 2**(K+1)
-            cnt += bisect_left(B_, 2**(k+1) - a) - bisect_left(B_, 2**k - a) 
-            #2**K + 2**(K+1) <= a+b < 2**(K+2)
-            cnt += bisect_left(B_, 2**(k+2) - a) - bisect_left(B_, 2**(k+1) + 2**k - a) 
-        if cnt&1:
-            ans += 1<<k
-    print(ans)
-
+    print(ceil(N,2))
 if __name__ == '__main__':
     main()

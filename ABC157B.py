@@ -40,24 +40,28 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    #28*2*(10^5)*log2(10^5)
-    N=I()
-    A=LI()
-    B=sorted(LI())
-    ans = 0
-    for k in range(28):
-        A_ = [a&((1<<(k+1))-1) for a in A]
-        B_ = [a&((1<<(k+1))-1) for a in B]
-        B_.sort()
-        cnt = 0
-        for a in A_:
-            #2**K <= a+b < 2**(K+1)
-            cnt += bisect_left(B_, 2**(k+1) - a) - bisect_left(B_, 2**k - a) 
-            #2**K + 2**(K+1) <= a+b < 2**(K+2)
-            cnt += bisect_left(B_, 2**(k+2) - a) - bisect_left(B_, 2**(k+1) + 2**k - a) 
-        if cnt&1:
-            ans += 1<<k
-    print(ans)
-
+    A=LLIN(3)
+    M=I()
+    B=[[0]*3 for _ in range(3)]
+    for _ in range(M):
+        b = I()
+        for i in range(3):
+            for j in range(3):
+                if A[i][j] == b:
+                    B[i][j] = 1
+    for i in range(3):
+        if B[i]==[1]*3:
+            print("Yes")
+            return
+        if [B[0][i],B[1][i],B[2][i]] == [1]*3:
+            print("Yes")
+            return
+    if [B[0][0],B[1][1],B[2][2]] == [1]*3:
+        print("Yes")
+        return
+    if [B[0][2],B[1][1],B[2][0]] == [1]*3:
+        print("Yes")
+        return
+    print("No")
 if __name__ == '__main__':
     main()

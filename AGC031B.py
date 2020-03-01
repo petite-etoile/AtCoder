@@ -1,56 +1,61 @@
+#
+# 　　  ⋀_⋀　 
+#　　  (･ω･)  
+# .／ Ｕ ∽ Ｕ＼
+#  │＊　合　＊│
+#  │＊　格　＊│ 
+#  │＊　祈　＊│ 
+#  │＊　願　＊│ 
+#  │＊　　　＊│ 
+#      ￣
+#
 import sys
-N = int(input())
-C = [0]
-n = N
-for i in range(1, n + 1):
-    c = int(sys.stdin.readline())
-    if c == C[-1]:
-        N -= 1
-    else:
-        C.append(c)
-dp = [0] * (N + 2)
-dp[0] = 1
-dp[1] = 1
-cumsum = [0] * (2 * (10 ** 5) + 2)
-cumsum[C[1]] = 1
-for i in range(2, N+1):
-    dp[i] = dp[i - 1] + cumsum[C[i]]
-    cumsum[C[i]] += dp[i-1]
-    dp[i] %= (10 ** 9 + 7)
-print(dp[N])
+sys.setrecursionlimit(10**6)
+input=sys.stdin.readline
+from math import floor,sqrt,factorial,hypot,log #log2ないｙｐ
+from heapq import heappop, heappush, heappushpop
+from collections import Counter,defaultdict,deque
+from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
+from bisect import bisect_left,bisect_right
+from copy import deepcopy
+from fractions import gcd
+from random import randint
+def ceil(a,b): return (a+b-1)//b
+inf=float('inf')
+mod = 10**9+7
+def pprint(*A): 
+    for a in A:     print(*a,sep='\n')
+def INT_(n): return int(n)-1
+def MI(): return map(int,input().split())
+def MF(): return map(float, input().split())
+def MI_(): return map(INT_,input().split())
+def LI(): return list(MI())
+def LI_(): return [int(x) - 1 for x in input().split()]
+def LF(): return list(MF())
+def LIN(n:int): return [I() for _ in range(n)]
+def LLIN(n: int): return [LI() for _ in range(n)]
+def LLIN_(n: int): return [LI_() for _ in range(n)]
+def LLI(): return [list(map(int, l.split() )) for l in input()]
+def I(): return int(input())
+def F(): return float(input())
+def ST(): return input().replace('\n', '')
+def main():
+    N=I()
+    C=LIN(N)
+    RLE = []
+    for c in C:
+        if not RLE or RLE[-1]!=c-1:
+            RLE.append(c-1)
+    
+    N=len(RLE)
+    cumsum = [0]*(2*(10**5))
+    DP = [1]+[0]*N
 
-"""
-import sys
-N = int(input())
-C = [0]
-#c = [int(sys.stdin.readline()) for i in range(N)]
-n = N
-for i in range(1, n + 1):
-    c = int(sys.stdin.readline())
-    if c == C[-1]:
-        N -= 1
-    else:
-        C.append(c)
-#C = C+c
-dp = [0] * (N + 2)
-dp_2 = [0] * (N + 2)
-color = [[]for i in range((2*(10**5)+2))]
-dp[0] = 1
-dp[1] = 1
-dp_2[0] = 1
-dp_2[1] = 1
-color[C[1]].append(1)
-cumsum = [0] * (2 * (10 ** 5) + 2)
-cumsum[C[1]] = 1
-for i in range(2, N+1):
-    dp[i] = dp[i - 1] + cumsum[C[i]]
-    cumsum[C[i]] += dp[i-1]
-    # ↓これだと遅い(当日はこれ以上の高速化が思いつけなくてTLE)
-    dp_2[i] = dp_2[i - 1] + sum([dp_2[col - 1] for col in color[C[i]]])
-    color[C[i]].append(i)
-    dp[i] %= (10 ** 9 + 7)
-# print(C)
-# print(dp)
-# print(dp_2)
-print(dp[N])
-"""
+    for i,c in enumerate(RLE):
+        DP[i+1] += DP[i]
+        DP[i+1] += cumsum[c]
+        cumsum[c] += DP[i]
+        DP[i+1]%=mod
+    print(DP[-1])
+if __name__ == '__main__':
+    main()

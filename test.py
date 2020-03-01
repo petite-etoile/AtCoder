@@ -40,15 +40,26 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,Q=MI()
-    S=ST()
-    cumsum = [0]*N
-    for i in range(N-1):
-        if S[i:i+2]=="AC":
-            cumsum[i+1]+=1
-        cumsum[i+1]+=cumsum[i]
-    for _ in range(Q):
-        l,r = MI()
-        print(cumsum[r-1]-cumsum[l-1])
+    M=randint(1,5)
+    A=[randint(1,10) for _ in range(M-1)]
+    *A,=accumulate(A)
+
+    def is_ok(x):
+        now = 0
+        for a in A:
+            if now>=a:
+                continue
+            now += x
+            if now < a:
+                return False
+        return True
+
+
+    E=1
+    while True:
+        if is_ok(E):
+            return
+        else:
+            E+=1
 if __name__ == '__main__':
     main()
