@@ -26,7 +26,7 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 #define mp make_pair
 #define bn '\n'
 template <typename T>
-ostream& operator<<(ostream& os, vector<T> &V){
+ostream& operator<<(ostream& os, const vector<T> &V){
     int N = V.size();
     REP(i,N){
         os << V[i];
@@ -157,56 +157,81 @@ ostream& operator<<(ostream& os, SegmentTree<T> &S){
 
 
 int main(){
-
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int N;
-    string S;
-    cin >> N >> S;
-
-
-    SegmentTree<int64> Seg(
-        [](int64 a,int64 b)->int64{
-            return a+b;
-        }, 0
-    );
+    int H,W,K;
+    cin >> H >> W >> K;
+    vector<string> grid(H);
+    REP(i,H) cin >> grid[i];
     
-    int64 base = 500001;
-    Seg.init(N+1);
-    REP(i,N){
-        int c = S[i]-'a';
-        Seg.set_val(i,(base) * (c+1));
-        debug(((base) * (c+1)))
-    }
-
-    int Q;
-    cin >> Q;
-    int k,l,r,c;
-    string s;
-    int x,y;
-    REP(i,Q){
-        cin >> k >> l;
-        debug(i)
-        if(k==1){
-            cin >> s;
-            l--;
-            c = s[0]-'a';
-            Seg.set_val(l, (base) * (c+1));
-        }else{
-            cin >> r;
-            l--;r;
-            int ans = 0;
-            x = Seg.query(l,r);
-            REP(c,26){
-                y = x%(2*(base)*(c+1));
-                debug(y)
-                    if(y/((base)*(c+1)) > 0){
-                        debug(char(c+'a'))
-                        ans++;
-                    }
-            }
-            cout << ans << bn;
+    vector<vector<int>> cnt(H,vector<int> (W,0));
+    REP(h,H){
+        REP(w,W){
+            cnt[h][w] += grid[h][w]-'0';
+            if(w) cnt[h][w] += cnt[h][w-1];
         }
     }
-    
+
+    int bit_max = 1<<(H-1);
+    int ans = inf;
+    REP(mask, bit_max){
+        vector<int> div;
+        div.emplace_back(0);
+        REP(i,H-1){
+            if(mask>>i&1){
+                div.emplace_back(i+1);
+            }
+        }
+        div.emplace_back(H);
+        
+        vector<int> DP(W+1,inf);
+        // vector<SegmentTree<int>> Seg(div.size(),SegmentTree<int> (
+        //     [](int a,int b)->int{
+        //         return min(a,b);
+        //     }, INT_MAX
+        // ));
+        // REP(i,div.size()) Seg[i].init(W+1);
+        // Seg[i].set_val(0,0);
+        
+        SegmentTree<int> Seg(
+            [](int a,int b)->int{
+                return min(a,b);
+            }, INT_MAX
+        );
+        Seg.init(W+1);
+        Seg.set_val(0,0);
+        
+        DP[0] = 0;
+        int l_bound = 0;
+        bool mask_ok = true;
+        REP(r,W+1){ if(r==0) r++;
+            while(mask_ok){
+                if(l_bound==r) {mask_ok = false; break;}
+                bool ok = true;
+                REP(i,div.size()-1){
+                    int sum_ = 0;
+                    int up=div[i], bot=div[i+1];
+                    for(int j=up;j<bot;j++){
+                        sum_ += cnt[j][r-1];
+                        if(l_bound) sum_ -= cnt[j][l_bound-1];
+                    }
+                    if(sum_>K) ok = false;
+                }
+                if(ok) break;
+                l_bound++;
+            }
+            if(not mask_ok) break;
+
+            DP[r] = Seg.query(l_bound,r) + 1;
+            Seg.set_val(r,DP[r]);
+        }
+        if(not mask_ok) continue;
+        int res = DP.back() - 1;
+        res += (__builtin_popcount(mask));
+        chmin(ans, res);
+    }
+
+
+
+    cout << ans << endl;
 }
