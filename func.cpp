@@ -34,7 +34,7 @@ v = q.front(); v.pop();
 //std::stack
 stack<int> st;
 st.push(v);
-st.back(); st.pop();
+st.top(); st.pop();
 
 //std::deque
 deque<int> q;

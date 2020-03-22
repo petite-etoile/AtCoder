@@ -1,12 +1,11 @@
 from random import randint
-N = 3
-a = []
-for _ in range(N):
-    a.append(randint(0,100))
-b = []
-for _ in range(N):
-    b.append(randint(0,100))
-
+s = "a"
+N = 10
+print("a")
 print(N)
-print(*a)
-print(*b)
+for i in range(N):
+    a = randint(0,1)
+    if a==1:
+        print(a+1,(randint(0,1))+1,randint(0,9)) 
+    else:
+        print(a+1)

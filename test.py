@@ -40,26 +40,60 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    M=randint(1,5)
-    A=[randint(1,10) for _ in range(M-1)]
-    *A,=accumulate(A)
-
-    def is_ok(x):
-        now = 0
-        for a in A:
-            if now>=a:
+    N=I()
+    edge = [[] for _ in range(N)]
+    for i in range(N-1):
+        a,b = MI_()
+        edge[a].append(b)
+        edge[b].append(a)
+    
+    root = 0
+    q = []
+    q.append(root)
+    pre = [-1]*N
+    visited = [False]*N
+    while q:
+        v = q.pop() 
+        visited[v] = True
+        for to in edge[v]:
+            if visited[to]:
                 continue
-            now += x
-            if now < a:
-                return False
-        return True
+            pre[to] = v
+            q.append(to)
+    
+    path = [] #パスに含まれる辺(根に向かう方で保存)
+    constraint = []
+    M=I()
+    for i in range(M):
+        a,b = MI_()
+        constraint.append((a,b))
+        root_path_a = set()
+        root_path_b = set()
+        while a!=root:
+            root_path_a.add((a,pre[a]))
+            a = pre[a]
+        while b!=root:
+            root_path_b.add((b,pre[b]))
+            b = pre[b]
+        path.append(root_path_a ^ root_path_b) #LCAまでのみ
+    
 
-
-    E=1
-    while True:
-        if is_ok(E):
-            return
+    ans = 0
+    for mask in range(1<<M):
+        builtin_count = 0
+        U = set() #pathに含まれる辺
+        for i in range(M):
+            if mask>>i&1:
+                builtin_count += 1
+                U |= path[i]
+        print(U)
+        if builtin_count&1:
+            ans -= 1<<(N-1-len(U))
         else:
-            E+=1
+            ans += 1<<(N-1-len(U))
+    print(ans)
+
+
+
 if __name__ == '__main__':
     main()

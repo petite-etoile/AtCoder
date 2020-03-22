@@ -1,51 +1,77 @@
-N = int(input())
-t = [int(i) for i in input().split()]
-v = [int(i) for i in input().split()]
-t.insert(0, 0)
-v.insert(0, 0)
-v.append(0)
-ans = 0
-for i in range(1, N+1):
-    if v[i] > v[i + 1]:  # 次が遅いときは気をつける
-        # 加速中
-        time_limit = t[i] - abs(v[i] - v[i - 1])
-        # 時間があってゆっくりできるならゆっくりしてから
-        if time_limit >= v[i] - v[i + 1]:
-            ans += pow(v[i] - v[i - 1], 2) / 2
-            print(pow(v[i] - v[i - 1], 2) / 2, "$")
-            time_limit -= (v[i] - v[i + 1])
-            print(pow(v[i] - v[i + 1], 2) / 2 +
-                  v[i+1]*abs(v[i] - v[i + 1]), "a")
-            ans += pow(v[i] - v[i + 1], 2) / 2 + v[i+1]*abs(v[i] - v[i + 1])
-            print(time_limit*v[i], "b")
-            ans += time_limit*v[i]
-        elif time_limit >= abs(v[i - 1] - v[i + 1]):
-            time_limit -= abs(v[i - 1] - v[i + 1])
-            print(pow(v[i - 1] - v[i + 1], 2), "c")
-            ans += pow(v[i - 1] - v[i + 1], 2)
-            print(time_limit*time_limit, "d")
-            ans += time_limit * time_limit
-        else:
-            # 途中
-            ans += (pow(v[i - 1] - v[i + 1]))
-        v[i] = v[i+1]
-    else:
-        time_limit = t[i] - abs(v[i] - v[i - 1])
-        if time_limit >= 0:
-            print(pow(v[i] - v[i - 1], 2) / 2 +
-                  v[i - 1] * abs(v[i] - v[i - 1]), "e", i)
-            ans += pow(v[i] - v[i - 1], 2) / 2 + \
-                v[i - 1] * abs(v[i] - v[i - 1])
-        else:
-            print(pow(t[i], 2) / 2 + v[i-1]*t[i], "f")
-            ans += pow(t[i], 2) / 2 + v[i-1]*t[i]
-            v[i] = v[i - 1] + t[i]
-            time_limit = 0
-        # print(pow(v[i] - v[i - 1], 2) / 2 + v[i - 1] * abs(v[i] - v[i - 1]))
-        print(time_limit * v[i], "g")
-        ans += time_limit * v[i]
-        # print(time_limit, v[i], time_limit * v[i])
+#
+# 　　  ⋀_⋀　 
+#　　  (･ω･)  
+# .／ Ｕ ∽ Ｕ＼
+#  │＊　合　＊│
+#  │＊　格　＊│ 
+#  │＊　祈　＊│ 
+#  │＊　願　＊│ 
+#  │＊　　　＊│ 
+#      ￣
+#
+import sys
+sys.setrecursionlimit(10**6)
+input=sys.stdin.readline
+from math import floor,sqrt,factorial,hypot,log #log2ないｙｐ
+from heapq import heappop, heappush, heappushpop
+from collections import Counter,defaultdict,deque
+from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
+from bisect import bisect_left,bisect_right
+from copy import deepcopy
+from fractions import gcd
+from random import randint
+def ceil(a,b): return (a+b-1)//b
+inf=float('inf')
+mod = 10**9+7
+def pprint(*A): 
+    for a in A:     print(*a,sep='\n')
+def INT_(n): return int(n)-1
+def MI(): return map(int,input().split())
+def MF(): return map(float, input().split())
+def MI_(): return map(INT_,input().split())
+def LI(): return list(MI())
+def LI_(): return [int(x) - 1 for x in input().split()]
+def LF(): return list(MF())
+def LIN(n:int): return [I() for _ in range(n)]
+def LLIN(n: int): return [LI() for _ in range(n)]
+def LLIN_(n: int): return [LI_() for _ in range(n)]
+def LLI(): return [list(map(int, l.split() )) for l in input()]
+def I(): return int(input())
+def F(): return float(input())
+def ST(): return input().replace('\n', '')
+def main():
+    N=I()
+    T=LI()
+    V=LI()
+    T_sum = sum(T)
 
-# print(v[i] * v[i] / 2+time_limit * v[i])
+    #初期化
+    max_V = [inf]*(2*T_sum+1)
+    now = 0
+    for i,(t,v) in enumerate(zip(T,V)):
+        max_V[now] = min(max_V[now], v)
+        for dt in range(2*t):
+            now += 1
+            max_V[now] = min(max_V[now], v)
+    max_V[0] = 0
+    max_V[-1] = 0
 
-print(ans)
+
+    #前から
+    for i in range(2*T_sum):
+        max_V[i+1] = min(max_V[i+1], max_V[i]+0.5)
+
+    for i in range(2*T_sum)[::-1]:
+        max_V[i] = min(max_V[i], max_V[i+1]+0.5)
+
+    #計算部分
+    ans = 0
+    for i in range(2*T_sum):
+        ans += (max_V[i]+max_V[i+1])/2
+
+    ans /= 2
+    print(ans)
+            
+
+if __name__ == '__main__':
+    main()
