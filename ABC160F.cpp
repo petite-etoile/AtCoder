@@ -179,7 +179,6 @@ mint dfs(int v, int pre){
         subtree_size[v] += subtree_size[to];
     }
     int sum_ = subtree_size[v]-1;
-    debug(v)
     for(auto to:edge[v]){
         if(to==pre) continue;
         res *= B.combination(sum_, subtree_size[to]);
@@ -189,32 +188,54 @@ mint dfs(int v, int pre){
     return res;
 }
 
-int N;
-void dfs_with_rerooting(int v, int pre){
-    mint pre_val;
-    if(pre!=-1){
-        pre_val = ans_[pre]/DP[v]/B.combination(N-1,subtree_size[v]);
-    }
 
-    int sum_ = N-1;
+int N;
+void dfs_with_rerooting(int v, int pre, mint pre_val, int now_subtree_size){
     for(auto to:edge[v]){
         if(to==pre){
             ans_[v] *= pre_val;
         }else{
             ans_[v] *= DP[to];
+            now_subtree_size += subtree_size[to];
+            ans_[v] *= B.combination(now_subtree_size, subtree_size[to]);
         }
-        if(to!=pre){
-            ans_[v] *= B.combination(sum_, subtree_size[to]);
-            sum_-=subtree_size[to];
-        }
+
     }
-    
+
     for(auto to:edge[v]){
         if(to!=pre){
-            dfs_with_rerooting(to, v);
+            mint val = ans_[v]/DP[to]/B.combination(N-1,subtree_size[to]);
+            dfs_with_rerooting(to, v, val, N-subtree_size[to]);
         }
     }
 }
+
+
+// void dfs_with_rerooting(int v, int pre){
+//     mint pre_val;
+//     if(pre!=-1){
+//         pre_val = ans_[pre]/DP[v]/B.combination(N-1,subtree_size[v]);
+//     }
+
+//     int sum_ = N-1;
+//     for(auto to:edge[v]){
+//         if(to==pre){
+//             ans_[v] *= pre_val;
+//         }else{
+//             ans_[v] *= DP[to];
+//         }
+//         if(to!=pre){
+//             ans_[v] *= B.combination(sum_, subtree_size[to]);
+//             sum_-=subtree_size[to];
+//         }
+//     }
+    
+//     for(auto to:edge[v]){
+//         if(to!=pre){
+//             dfs_with_rerooting(to, v);
+//         }
+//     }
+// }
 
 int main(){
     cin.tie(0);
@@ -232,7 +253,7 @@ int main(){
         edge[b].emplace_back(a);
     }
     dfs(0,-1);
-    dfs_with_rerooting(0,-1);
+    dfs_with_rerooting(0,-1,-1,0);
 
     cout << ans_;
 }

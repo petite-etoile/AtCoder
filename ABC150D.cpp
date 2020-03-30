@@ -69,16 +69,56 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 //fixed<<setprecision(10)<<ans<<endl;
 
 
+//拡張Euclidの互除法
+//ap + bq = gcd(a,b) となる(p,q)を求め、gcd(a,b)を返す
+long long exGCD(long long a, long long b, long long &p, long long &q){
+    if(b==0){
+        p=1; q= 0;
+        return a;
+    }
+    long long d = exGCD(b,a%b,q,p);
+    q -= a/b * p;
+    return d;
+}
+
+//中国の剰余定理
+//解がx≡r(mod. M)となるような r,Mをpairで返す
+pair<long long,long long> ChineseRem(const vector<long long>& b,const vector<long long>& m){
+    if(b.size()!=m.size()){
+        cerr << "bとmのサイズが違います" << bn;
+        return make_pair(-1,-1);
+    }
+    long long r = 0, M = 1;
+    long long p,q;
+    REP(i,b.size()){
+        long long d = exGCD(M,m[i],p,q);
+        if((b[i]-r)%d != 0) return make_pair(-1,-1); //解無し
+        long long tmp = (b[i] - r)/d * p % (m[i]/d);
+        r += M * tmp;
+        M *= m[i] / d;
+    }
+    r%=M;
+    while(r<0) r+=M;
+    return make_pair(r,M);
+}
+
 
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
+    int64 N,M;
+    cin >> N >> M;
+    vector<int64> A(N);
+    vector<int64> B(N);
+    REP(i,N) cin >> A[i], B[i] = A[i]/2;
 
-    int ans=0;
+    int64 x,m;
+    tie(x,m) = ChineseRem(B,A);
+    if(x==-1){
+        cout << 0 << bn;
+    }else{
+        int ans = M/m + (x<=(M%m));
+        cout << ans << endl;
+    }
 
-
-
-    cout << ans << endl;
 }
