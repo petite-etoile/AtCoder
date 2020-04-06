@@ -12,7 +12,7 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-from math import floor,sqrt,factorial,hypot,log #log2ないｙｐ
+from math import floor,sqrt,factorial,hypot,log,pi #log2ないｙｐ
 from heapq import heappop, heappush, heappushpop
 from collections import Counter,defaultdict,deque
 from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
@@ -40,21 +40,27 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N=I()
-    if(N&1):
-        print((N+1)*(N-1)//2 -(N-1))
-        pair = N-2
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-    else:
-        print(N*(N-2)//2)
-        pair = N-1
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
+    N,Q=MI()
+    XRH = LLIN(N)
+    AB=LLIN(Q)
+    for a,b in AB:
+        ans = 0
+        for x,r,h in XRH:
+            if b < x or x+h < a:
+                continue
+            radius = r
+            height = h
+            if(a>x):
+                height = x+h-a                
+                radius *= height/h
+            ans += radius*radius*pi*height/3
+            if(b<x+h):
+                height = x+h-b
+                radius = r * (height)/h
+                ans -= radius*radius*pi*height/3
+        print(ans)
+
+
 
 if __name__ == '__main__':
     main()

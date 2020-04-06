@@ -41,20 +41,31 @@ def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
     N=I()
-    if(N&1):
-        print((N+1)*(N-1)//2 -(N-1))
-        pair = N-2
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
+    D=LI()
+    if( 0 in D):
+        print(0)
+    elif( N >= 24):
+        print(0)
+    elif( N>= 12):
+        C=Counter(D)
+        for c in C.values():
+            if(c>=3):
+                print(0)
+                return
+        print(1)
     else:
-        print(N*(N-2)//2)
-        pair = N-1
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
+        ans = 0
+        for mask in range(1<<N):
+            times = [0,24]
+            for i in range(N):
+                if(mask >> i & 1):
+                    times.append(24-D[i])
+                else:
+                    times.append(D[i])
+            times.sort()
+            sub = [times[i+1] - times[i] for i in range(len(times)-1)]
+            ans = max(ans ,min(sub))
+        print(ans)
 
 if __name__ == '__main__':
     main()

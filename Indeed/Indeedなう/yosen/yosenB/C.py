@@ -41,20 +41,22 @@ def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
     N=I()
-    if(N&1):
-        print((N+1)*(N-1)//2 -(N-1))
-        pair = N-2
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-    else:
-        print(N*(N-2)//2)
-        pair = N-1
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-
+    edge = [[] for _ in range(N)]
+    for _ in range(N-1):
+        a,b = MI_()
+        edge[a].append(b)
+        edge[b].append(a)
+    
+    pri_queue = [0]
+    S=set()
+    ans = []
+    while pri_queue:
+        v = heappop(pri_queue)
+        ans.append(v+1)
+        S.add(v)
+        for to in edge[v]:
+            if(to not in S):
+                heappush(pri_queue, to)
+    print(*ans)
 if __name__ == '__main__':
     main()

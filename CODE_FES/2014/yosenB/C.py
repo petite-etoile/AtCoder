@@ -40,21 +40,26 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N=I()
-    if(N&1):
-        print((N+1)*(N-1)//2 -(N-1))
-        pair = N-2
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
+    S1=ST()
+    S2=ST()
+    S3=ST()
+    N = len(S1)//2
+    A = Counter(S1)
+    B = Counter(S2)
+    C = Counter(S3)
+        
+    A_cnt = 0
+    B_cnt = 0
+    for c,need in C.items():
+        margin = (A[c] + B[c]) - need
+        if margin < 0:
+            print("NO")
+            return
+        A_cnt += max(0,A[c] - margin)
+        B_cnt += max(0,B[c] - margin)
+    if(B_cnt > N or A_cnt > N):
+        print("NO")
     else:
-        print(N*(N-2)//2)
-        pair = N-1
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-
+        print("YES")
 if __name__ == '__main__':
     main()

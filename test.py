@@ -39,61 +39,28 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
+def is_ok(A):
+    for i in range(3):
+        for j in range(3):
+            if (not (A[i][j] <= A[i+1][j])) or (not (A[i][j] <= A[i][j+1])):
+                return False
+    return True
+
 def main():
-    N=I()
-    edge = [[] for _ in range(N)]
-    for i in range(N-1):
-        a,b = MI_()
-        edge[a].append(b)
-        edge[b].append(a)
-    
-    root = 0
-    q = []
-    q.append(root)
-    pre = [-1]*N
-    visited = [False]*N
-    while q:
-        v = q.pop() 
-        visited[v] = True
-        for to in edge[v]:
-            if visited[to]:
-                continue
-            pre[to] = v
-            q.append(to)
-    
-    path = [] #パスに含まれる辺(根に向かう方で保存)
-    constraint = []
-    M=I()
-    for i in range(M):
-        a,b = MI_()
-        constraint.append((a,b))
-        root_path_a = set()
-        root_path_b = set()
-        while a!=root:
-            root_path_a.add((a,pre[a]))
-            a = pre[a]
-        while b!=root:
-            root_path_b.add((b,pre[b]))
-            b = pre[b]
-        path.append(root_path_a ^ root_path_b) #LCAまでのみ
-    
-
+    a,b,c=MI()
+    N=a+b+c
     ans = 0
-    for mask in range(1<<M):
-        builtin_count = 0
-        U = set() #pathに含まれる辺
-        for i in range(M):
-            if mask>>i&1:
-                builtin_count += 1
-                U |= path[i]
-        print(U)
-        if builtin_count&1:
-            ans -= 1<<(N-1-len(U))
-        else:
-            ans += 1<<(N-1-len(U))
+    for it in permutations(range(N)):
+        A=[[inf]*4 for _ in range(4)]
+        for i,x in enumerate(it):
+            if(i<a):
+                A[0][i] = x
+            elif(i<a+b):
+                A[1][i-a] = x
+            else:
+                A[2][i-a-b] = x
+        if(is_ok(A)):
+            ans += 1
     print(ans)
-
-
-
 if __name__ == '__main__':
     main()

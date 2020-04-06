@@ -40,21 +40,23 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N=I()
-    if(N&1):
-        print((N+1)*(N-1)//2 -(N-1))
-        pair = N-2
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-    else:
-        print(N*(N-2)//2)
-        pair = N-1
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-
+    N = I()
+    S_list=[ST() for _ in range(N)]
+    right = N
+    ans = 0
+    for i in range(N):
+        right_bound = -1
+        for j,s in enumerate(S_list[i]):
+            if(j >= right):
+                break
+            if s == ".":
+                right_bound = j
+        if right_bound!=-1:
+            ans += 1
+            right = right_bound
+        else:
+            right = N
+    print(ans)
+    
 if __name__ == '__main__':
     main()

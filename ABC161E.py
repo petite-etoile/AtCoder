@@ -40,21 +40,34 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N=I()
-    if(N&1):
-        print((N+1)*(N-1)//2 -(N-1))
-        pair = N-2
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-    else:
-        print(N*(N-2)//2)
-        pair = N-1
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-
+    N,K,C=MI()
+    S=ST()
+    DP1=[0]*N
+    DP2=[0]*N
+    for i,s in enumerate(S):
+        if(s=="o"):
+            DP1[i]=1
+            if(i-C>=0):
+                DP1[i] = max(DP1[i-C] + 1,DP1[i])
+        if(i):
+            DP1[i]=max(DP1[i-1],DP1[i])
+    for i in range(N)[::-1]:
+        s = S[i]
+        if(s=="o"):
+            DP2[i]=1
+            if(i+C<N):
+                DP2[i] = max(DP2[i+C] + 1, DP2[i])
+        if(i+1<N):
+            DP2[i]=max(DP2[i+1],DP2[i])
+    print(DP1)
+    print(DP2)
+    for i in range(N):
+        now = 0
+        if(i-1>=0):
+            now += DP1[i-1]
+        if(i+1<N):
+            now += DP2[i+1]
+        if(now<K):
+            print(i+1)
 if __name__ == '__main__':
     main()

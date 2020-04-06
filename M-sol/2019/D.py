@@ -41,20 +41,31 @@ def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
     N=I()
-    if(N&1):
-        print((N+1)*(N-1)//2 -(N-1))
-        pair = N-2
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-    else:
-        print(N*(N-2)//2)
-        pair = N-1
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
+    edge = [[] for _ in range(N)]
+    indegree = [0]*N
+    for _ in range(N-1):
+        a,b = MI_()
+        indegree[a] += 1
+        indegree[b] += 1
+        edge[a].append(b)
+        edge[b].append(a)
 
+    ans = [-1]*N
+    s = []
+    for i in range(N):
+        if(indegree[i]==1):
+            s.append(i)  
+    C = sorted(LI(), reverse=True)
+    ans_sum = sum(C)-C[0]
+    while(s):
+        v = s.pop()
+        ans[v] = C.pop()
+        for to in edge[v]:
+            indegree[to]-=1
+            if(indegree[to] == 1):
+                s.append(to)
+
+    print(ans_sum)
+    print(*ans)
 if __name__ == '__main__':
     main()

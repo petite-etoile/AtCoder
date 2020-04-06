@@ -36,16 +36,16 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    s = ST().replace("BC", "X")
-    ans = 0
-    a_cnt=0
-    for st in s:
-        if st == "A":
-            a_cnt += 1
-        elif st == "X":
-            ans += a_cnt
-        else:
-            a_cnt=0
-    print(ans)
+    S=list(ST())
+    #愚直解
+    while 1:
+        frag = False
+        for i in range(len(S)-2)[::-1]:
+            if S[i:i + 3] == "ABC":
+                S[i:i + 3] == "BCA"
+        print(*S, sep="")
+    pass
+
+
 if __name__ == '__main__':
     main()

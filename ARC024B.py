@@ -41,20 +41,21 @@ def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
     N=I()
-    if(N&1):
-        print((N+1)*(N-1)//2 -(N-1))
-        pair = N-2
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
+    C=LIN(N)
+    if(C.count(1)==N or C.count(0)==N):
+        print(-1)
     else:
-        print(N*(N-2)//2)
-        pair = N-1
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-
+        C*=2
+        longest_continuous = 0
+        before = -1
+        continuous = 0
+        for c in C:
+            if(c == before):
+                continuous += 1
+            else:
+                continuous = 1
+            before = c
+            longest_continuous = max(longest_continuous, continuous)
+        print((longest_continuous-1)//2 + 1)            
 if __name__ == '__main__':
     main()

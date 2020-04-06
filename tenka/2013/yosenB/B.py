@@ -40,21 +40,43 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N=I()
-    if(N&1):
-        print((N+1)*(N-1)//2 -(N-1))
-        pair = N-2
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
-    else:
-        print(N*(N-2)//2)
-        pair = N-1
-        for i in range(N):
-            for j in range(i+1,N):
-                if(i+j != pair):
-                    print(i+1,j+1)
+    Q,L=MI()
+    size = 0
+    stack = []
+    push, pop = stack.append, stack.pop
+    for _ in range(Q):
+        S=ST()
+        if "Push" in S:
+            _, n, x = S.split()
+            size += int(n)
+            push( (int(n),int(x)) )
+            if(size > L):
+                print("FULL")
+                return
+        elif S == "Top":
+            if(stack):
+                print(stack[-1][1])
+            else:
+                print("EMPTY")
+                return
+        elif "Pop" in S:
+            _,n = S.split()
+            n = int(n)
+            size-=n
+            if(size<0):
+                print("EMPTY")
+                return
+            while(n):
+                m,x = pop()
+                sub = min(m,n)
+                n-=sub
+                m-=sub
+                if(m):
+                    push((m,x))
+        else: #Size
+            print(size)
+        # print(S, stack)
+    print("SAFE")
 
 if __name__ == '__main__':
     main()
