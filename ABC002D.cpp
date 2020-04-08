@@ -63,17 +63,43 @@ ostream& operator<<(ostream& os, deque<T> &q){
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 //fixed<<setprecision(10)<<ans<<endl;
 
+int N,M;
+vector<vector<bool>> mat;
+int dfs(vector<bool> A, int d){ //A[d] == true => i人目を採用
+    if(d==N){ //check
+        int group_size = 0; //派閥に属する人数
+        REP(i,N) if(A[i]) group_size++;
+        REP(i,N){
+            if(not A[i]) continue; //派閥に入ってない
+            REP(j,N){
+                if(not A[j]) continue; //派閥に入ってない
+                if(not mat[i][j]) return 0; //iとjが知り合いじゃない
+            }
+        }
+        return group_size; //全員知り合いだったので、派閥の大きさを返す
+    }
 
+    int res = 0;
+    chmax(res, dfs(A, d+1)); //dを不採用
+    A[d] = true;
+    chmax(res, dfs(A, d+1)); //dを採用
+    return res; //dを採用した場合と不採用だった場合の最大値を返す
+}
 
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int N,M;
     cin >> N >> M;
-    vector<vector<bool>> mat(N,vector<bool>(N,false));
+    mat.assign(N, vector<bool>(N,false));
     int x,y;
     REP(i,M) cin >> x >> y, x--,y--, mat[x][y]=true, mat[y][x]=true;
     REP(i,N) mat[i][i]=true;
+
+    vector<bool> A(N);    
+    cout << dfs(A, 0) << '\n';
+    return 0;
+
+
     int max_bit = 1<<N;
     int ans=0;
     REP(mask,max_bit){

@@ -30,9 +30,8 @@ ostream& operator<<(ostream& os, const vector<T> &V){
     int N = V.size();
     REP(i,N){
         os << V[i];
-        if (i!=N-1) os << " ";
+        os << "\n";
     }
-    os << "\n";
     return os;
 }
 template <typename T,typename S>
@@ -68,67 +67,21 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 #pragma endregion
 //fixed<<setprecision(10)<<ans<<endl;
 
-string bin(int64 n){
-    string s = "";
-    while(n>0){
-        string b = to_string(n%2);
-        s = b+s;
-        n>>=1;
-    }
-    return s;
-}
+
 
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int64 N,K;
-    cin >> N >> K;
-    vector<int64> A(N);
+    int N ,C;
+    cin >> N >> C;
+    vector<int> A(N);
     REP(i,N) cin >> A[i];
-
-    vector<int64> cumsum(N+1,0);
+    vector<int64> last(N+1,-1);
+    vector<int64> ans(C,0);
     REP(i,N){
-        cumsum[i+1] = cumsum[i];
-        cumsum[i+1] += A[i];
+        ans[A[i]-1] += (i-last[A[i]]) * (N-i);
+        last[A[i]] = i;
     }
 
-    const int bit_length = 41; //log2(10^9 * 1000) < 40
-    vector<vector<bool>> bits;
-    REP(l,N){
-        for(int r=l+1;r<=N;r++){
-            int64 S = cumsum[r] - cumsum[l];
-            vector<bool> tmp(bit_length, false);
-            int i = 0;
-            while(S){
-                tmp[i] = S&1;
-                S>>=1;
-                i++;
-            }
-            bits.emplace_back(tmp);
-        }
-    }
-    vector<int> bits_cnt(bit_length, 0);
-    for(auto bit_:bits){
-        REP(i,bit_length){
-            bits_cnt[i] += bit_[i];
-        }
-    }
-
-    int64 ans=0;
-    vector<bool> removed(bits.size() , false);
-    for(int i=bit_length-1; i>=0; i--){ //上から採用する
-        if(bits_cnt[i] >= K){
-            ans += pow(2,i);
-            REP(b,bits.size()){
-                if(not bits[b][i] & not removed[b]){ //使えないやつの排除
-                    removed[b] = true;
-                    REP(j,bit_length){
-                        bits_cnt[j] -= bits[b][j];
-                    }
-                }
-            }
-        }
-    }
-
-    cout << ans << endl;
+    cout << ans;
 }

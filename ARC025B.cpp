@@ -68,62 +68,52 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 #pragma endregion
 //fixed<<setprecision(10)<<ans<<endl;
 
-string bin(int64 n){
-    string s = "";
-    while(n>0){
-        string b = to_string(n%2);
-        s = b+s;
-        n>>=1;
+struct cumsum2D{
+    int H,W;
+    vector<vector<int64>> cumsum;
+    cumsum2D(vector<vector<int64>> A) :H(A.size()), W(A[0].size()){
+        cumsum.assign(H+1, vector<int64>(W+1,0));
+        for(int h=0;h<H;h++){
+            for(int w=0;w<W;w++){
+                cumsum[h+1][w+1] = A[h][w];
+            }
+        }
+
+        for(int h=0;h<H;h++){
+            for(int w=0;w<W;w++){
+                cumsum[h+1][w+1] += cumsum[h+1][w] + cumsum[h][w+1] - cumsum[h][w];
+            }
+        }
     }
-    return s;
-}
+
+    // return sum(A[h][w]) {h,w | h in [h_begin, h_end) and w in [w_begin, w_end)}
+    int64 get(int h_begin, int h_end, int w_begin, int w_end){
+        return cumsum[h_end][w_end] - cumsum[h_begin][w_end] - cumsum[h_end][w_begin] + cumsum[h_begin][w_begin];
+    }
+};
 
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
-    int64 N,K;
-    cin >> N >> K;
-    vector<int64> A(N);
-    REP(i,N) cin >> A[i];
-
-    vector<int64> cumsum(N+1,0);
-    REP(i,N){
-        cumsum[i+1] = cumsum[i];
-        cumsum[i+1] += A[i];
-    }
-
-    const int bit_length = 41; //log2(10^9 * 1000) < 40
-    vector<vector<bool>> bits;
-    REP(l,N){
-        for(int r=l+1;r<=N;r++){
-            int64 S = cumsum[r] - cumsum[l];
-            vector<bool> tmp(bit_length, false);
-            int i = 0;
-            while(S){
-                tmp[i] = S&1;
-                S>>=1;
-                i++;
-            }
-            bits.emplace_back(tmp);
-        }
-    }
-    vector<int> bits_cnt(bit_length, 0);
-    for(auto bit_:bits){
-        REP(i,bit_length){
-            bits_cnt[i] += bit_[i];
+    int H, W;
+    cin >> H >> W;
+    vector<vector<int64>> C(H,vector<int64>(W));
+    REP(h,H){
+        REP(w,W){
+            cin >> C[h][w];
+            if((h+w)&1){ C[h][w]*=-1; }
         }
     }
 
-    int64 ans=0;
-    vector<bool> removed(bits.size() , false);
-    for(int i=bit_length-1; i>=0; i--){ //上から採用する
-        if(bits_cnt[i] >= K){
-            ans += pow(2,i);
-            REP(b,bits.size()){
-                if(not bits[b][i] & not removed[b]){ //使えないやつの排除
-                    removed[b] = true;
-                    REP(j,bit_length){
-                        bits_cnt[j] -= bits[b][j];
+    cumsum2D cumsum(C);
+    int ans=0;
+    
+    REP(t,H){
+        for(int b=t+1;b<=H;b++){
+            REP(l,W){
+                for(int r=l+1;r<=W;r++){
+                    if(cumsum.get(t,b,l,r) == 0){
+                        chmax(ans, (b-t)*(r-l));
                     }
                 }
             }
