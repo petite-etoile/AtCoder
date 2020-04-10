@@ -81,13 +81,27 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 int main(){
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
-    REP(i,N) solve();
+    int N,K;
+    cin >> N >> K;
+    vector<vector<int>> A(N,vector<int>(K));
+    REP(i,N) REP(j,K) cin >> A[i][j];
+    int remain = K;
+    const int max_I = 1e6;
+    vector<bool> decided(max_I);
+    REP(i,N){
+        int r = N-1-i;
+        vector<int> confirm;
+        REP(k,K){
+            REP(j,i+1){
+                if(remain > r * k and not decided[A[j][k]]){
+                    confirm.emplace_back(A[j][k]);
+                    decided[A[j][k]] = true;
+                    remain--;
+                }
+            }
+        }
+        sort(ALL(confirm));
+        cout << confirm;
+    }
 
-    int ans=0;
-
-
-
-    cout << ans << endl;
 }

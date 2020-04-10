@@ -81,13 +81,36 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 int main(){
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
-    int N;
+    int64 N;
     cin >> N;
-    REP(i,N) solve();
+    vector<int64> A(N);
+    REP(i,N) cin >> A[i];
+    vector<int64> DP_left(N,0), DP_right(N,0);
+    vector<int64> cumsum(N+1);
+    REP(i,N) cumsum[i+1] = cumsum[i] + A[i];
+    REP(i,N){
+        if(i){
+            DP_left[i] += DP_left[i-1];
+        }
+        DP_left[i] += i; //今まで置いた分もひっくり返る
+        DP_left[i] += cumsum[i+1];
 
-    int ans=0;
+        int j = N-i-1;
+        if(i){
+            DP_right[j] += DP_right[j+1];
+        }
+        DP_right[j] += i;
+        DP_right[j] += cumsum[N] - cumsum[j];
+    }
 
-
+    int64 ans = INF;
+    REP(i,N){
+        if(i&1) continue;
+        int64 tmp = 0;
+        if(i) tmp += DP_left[i-1];
+        if(i+1<N) tmp += DP_right[i+1];
+        chmin(ans, tmp);
+    }
 
     cout << ans << endl;
 }

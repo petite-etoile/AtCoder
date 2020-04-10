@@ -81,13 +81,50 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 int main(){
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
-    REP(i,N) solve();
 
-    int ans=0;
+    string S; cin >> S;
+    int N = S.size();
+    const double COMMAND = -10, BACK1 = -1, BACK3 = -3;
+    // -10:コマンド -1:1個戻ってくる -3:3個戻ってくる 正->ダメージ
+    priority_queue<pair<double,int>,vector<pair<double,int>>, greater<pair<double,int>>> q;
+    REP(i,N) q.push(mp(i,COMMAND));
 
+    double t,damage;;
+    int c, combo = 0, i=0;
+    int kaburing = 5; //かぶりんの数
+    double lock = 0; //硬直で動けなくない時間
+    int64 ans=0;
+    while (q.size()){
+        tie(t,c) = q.top(); q.pop();
+        if(c==COMMAND){
+            auto s = S[i++];
+            if(lock > t) continue;
+            if(s == 'N'){ //通常投げ入力
+                if(kaburing<1) continue;
+                damage = 10+combo/10;
 
+                q.push(mp(t+1.5, damage)); //ダメージ
+                q.push(mp(t+1.5+5,BACK1)); //ダメージの5秒後に戻る
+                chmax(lock, t+0.5); //硬直
+                kaburing--;
+            }else if(s == 'C'){ //ため投げ入力
+                if(kaburing<3) continue;
+                damage = 5*(10+combo/10);
+
+                q.push(mp(t+3.5, damage)); //ダメージ
+                q.push(mp(t+3.5+5,BACK3)); //ダメージの5秒後に戻る
+                chmax(lock, t+2.5); //硬直
+                kaburing-=3;
+            }
+        }else if(c==BACK1){ //1個戻ってくる
+            kaburing++;
+        }else if(c==BACK3){ //3個戻ってくる
+            kaburing+=3;
+        }else{ //ダメージ発生
+            ans += c;
+            combo++;
+        }
+    }
 
     cout << ans << endl;
 }

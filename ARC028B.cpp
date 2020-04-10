@@ -64,14 +64,6 @@ ostream& operator<<(ostream& os, deque<T> &q){
     os<<endl;
     return os;
 }
-template <typename T,typename S>
-ostream& operator<<(ostream& os, map<T,S> const&M){
-    for(auto e:M){
-        os<<e;
-    }
-    os<<endl;
-    return os;
-}
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 #pragma endregion
 //fixed<<setprecision(10)<<ans<<endl;
@@ -81,13 +73,19 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 int main(){
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
-    REP(i,N) solve();
-
-    int ans=0;
-
-
-
-    cout << ans << endl;
+    int N,K;
+    cin >> N >> K;
+    priority_queue<pair<int,int>> q;
+    int x;
+    REP(i,K){
+        cin >> x;
+        q.push(mp(x,i));
+    }
+    cout << q.top().second + 1 << bn;
+    REP(i,N-K){
+        cin >> x;
+        q.push(mp(x,i+K));
+        q.pop();
+        cout << q.top().second + 1 << bn;;
+    }
 }

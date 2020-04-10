@@ -64,30 +64,45 @@ ostream& operator<<(ostream& os, deque<T> &q){
     os<<endl;
     return os;
 }
-template <typename T,typename S>
-ostream& operator<<(ostream& os, map<T,S> const&M){
-    for(auto e:M){
-        os<<e;
-    }
-    os<<endl;
-    return os;
-}
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 #pragma endregion
-//fixed<<setprecision(10)<<ans<<endl;
 
+bool is_ok(long double t, vector<pair<int64,int64>>& ZC){
+    long double l = -1e5, r = 1e5;
+    long double z,c;
+    for(auto e:ZC){
+        tie(z,c) = e;
+        long double dz = t/c;
+        chmax(l, z-dz);
+        chmin(r, z+dz);
+    }
+    return l<=r;
+}
 
+long double binary_search(long double ok, long double ng, long double eps, vector<pair<int64,int64>>& ZC){
+    while(abs(ng-ok)>eps){
+        auto mid = (ok+ng)/2;
+        if(is_ok(mid,ZC)) ok = mid;
+        else ng = mid;
+    }
+    return ok;
+}
 
 int main(){
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
     int N;
     cin >> N;
-    REP(i,N) solve();
+    vector<pair<int64,int64>> XC,YC;
+    int64 x,y,c;
+    REP(i,N){
+        cin >> x >> y >> c;
+        XC.emplace_back(x,c);
+        YC.emplace_back(y,c);
+    }
+    long double ok = 1e9, ng = 0, eps = 1e-6;
+    auto ans_x = binary_search(ok,ng,eps,XC);
+    auto ans_y = binary_search(ok,ng,eps,YC);
 
-    int ans=0;
-
-
-
-    cout << ans << endl;
+    cout << fixed<<setprecision(10)<<max(ans_x, ans_y)<<endl;
 }
