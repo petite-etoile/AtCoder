@@ -76,21 +76,6 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 #pragma endregion
 //fixed<<setprecision(10)<<ans<<endl;
 
-
-//素因数分解
-map<int64,int64> prime_factorization(int64 n){
-    int64 copy = n;
-    map<int64,int64> res;
-    for(int64 i=2;i*i<=copy;i++){
-        while(n%i==0){
-            res[i]++;
-            n/=i;
-        }
-    }
-    if(n!=1) res[n]++;
-    return res;
-}
-
 int64 pow(int a,int b,int mod){
     vector<bool> bit;
     for(b=b;b>0;b>>=1){
@@ -162,36 +147,84 @@ ostream& operator<<(ostream& os, mint a){
     return os;
 }
 
-int main(){
-    cin.tie(nullptr);
-    ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
-    vector<int64> A(N);
-    REP(i,N) cin >> A[i];
+template <typename T>
+struct Matrix{
+    vector<vector<T>> matrix_data;
+    Matrix(){}
+    Matrix(const vector<vector<T>>& matrix_data):matrix_data(matrix_data){}
 
-    map<int64,int64> lcm;
-    vector<map<int64,int64>> prime(N);
-    int64 p,c;
-    REP(i,N){
-        auto a = A[i];
-        prime[i] = prime_factorization(a);
-        for(auto e:prime[i]){
-            tie(p,c) = e;
-            chmax(lcm[p], c);
+    //単位行列
+    Matrix<T> Identity(size_t N){
+        vector<vector<T>> res(N,vector<T>(N,0));
+        for(size_t i=0; i<N; i++) res[i][i]=1;
+        return Matrix<T>(res);
+    }
+
+    //累乗O(N^3 log k)
+    Matrix<T> power(int64 k){
+        Matrix<T> res = Matrix::Identity(matrix_data.size());
+        Matrix<T> tmp = *this;
+
+        while(k){
+            if(k&1){res *= tmp;}
+            tmp *= tmp;
+            k >>= 1LL;
+        }
+        return res;
+    }
+
+    //T det(){}
+    //Matrix<T> inv(){} 逆行列求めるやつあっても面白いね。正則(⇔det(A)!=0)じゃないといけないけど。
+};
+
+
+template <typename T>
+Matrix<T> operator*(const Matrix<T>& mat_a, const Matrix<T>& mat_b){
+    size_t A = mat_a.matrix_data.size();
+    size_t B = mat_b.matrix_data.size();
+    assert(B == mat_a.matrix_data[0].size());
+    size_t C = mat_b.matrix_data[0].size();
+
+    Matrix<T> res(vector<vector<T>>(A,vector<T>(C,0)));
+    
+    for(size_t i=0; i<A; i++){
+        assert(mat_a.matrix_data[i].size() == B);
+        for(size_t j=0; j<B; j++){
+            for(size_t k=0; k<C; k++){
+                res.matrix_data[i][j] += mat_a.matrix_data[i][k] * mat_b.matrix_data[k][j];
+            }
         }
     }
 
-    mint ans=0;
-    mint L = 1;
-    for(auto e:lcm){
-        tie(p,c) = e;
-        L *= mint(p).pow(c);
-    }
-    
-    REP(i,N){
-        ans +=  L/A[i];
-    }
+    return res;
+}
 
+template <typename T>
+Matrix<T>& operator*=(Matrix<T>& mat_a, Matrix<T>& mat_b){
+    mat_a = mat_a*mat_b;
+    return mat_a;
+}
+
+template <typename T>
+ostream& operator<<(ostream& os, const Matrix<T>& M){
+    os << M.matrix_data;
+    return os;
+}
+
+
+int main(){
+    cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    int64 N;
+    cin >> N;
+    vector<vector<mint>> A = {{0,1,1},{1,0,1},{1,1,0}}, B = {{0,1,0},{1,0,0},{1,1,0}}; //A:(朝->昼, 昼->夜), B:(夜->朝)
+    vector<vector<mint>> S = {{1,1,0}};
+    Matrix<mint> MA(A), MB(B), MS(S); 
+    
+    auto M_day = MA * MA * MB; //1-day
+    auto M_ans = MS * (M_day.power(N-1) * MA * MA);
+
+    // debug(M_ans)
+    mint ans = M_ans.matrix_data[0][0] + M_ans.matrix_data[0][1] + M_ans.matrix_data[0][2];
     cout << ans << endl;
 }

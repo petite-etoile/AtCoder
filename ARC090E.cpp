@@ -76,21 +76,6 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 #pragma endregion
 //fixed<<setprecision(10)<<ans<<endl;
 
-
-//素因数分解
-map<int64,int64> prime_factorization(int64 n){
-    int64 copy = n;
-    map<int64,int64> res;
-    for(int64 i=2;i*i<=copy;i++){
-        while(n%i==0){
-            res[i]++;
-            n/=i;
-        }
-    }
-    if(n!=1) res[n]++;
-    return res;
-}
-
 int64 pow(int a,int b,int mod){
     vector<bool> bit;
     for(b=b;b>0;b>>=1){
@@ -162,35 +147,93 @@ ostream& operator<<(ostream& os, mint a){
     return os;
 }
 
-int main(){
-    cin.tie(nullptr);
-    ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
-    vector<int64> A(N);
-    REP(i,N) cin >> A[i];
-
-    map<int64,int64> lcm;
-    vector<map<int64,int64>> prime(N);
-    int64 p,c;
-    REP(i,N){
-        auto a = A[i];
-        prime[i] = prime_factorization(a);
-        for(auto e:prime[i]){
-            tie(p,c) = e;
-            chmax(lcm[p], c);
+vector<int64> dijkstra(vector<vector<pair<int64,int64>>> const& edge, int64 start){
+    int64 N = edge.size();
+    vector<int64> dist(N,INF);
+    priority_queue<pair<int64,int64>,vector<pair<int64,int64>>, greater<pair<int64,int64>> > q;
+    q.push(mp(0, start));
+    vector<bool> visited(N,false);
+    
+    int64 from,d;
+    int64 to,cost;
+    while(!q.empty()){
+        tie(d,from) = q.top(); q.pop();
+        if (visited[from]) continue;
+        visited[from] = true;
+        dist[from] = d;
+        for(auto e:edge[from]){
+            tie(to,cost) = e;
+            if (visited[to]) continue;
+            if(chmin(dist[to], int64(d+cost)))
+                q.push(mp(d+cost, to));
         }
     }
 
-    mint ans=0;
-    mint L = 1;
-    for(auto e:lcm){
-        tie(p,c) = e;
-        L *= mint(p).pow(c);
-    }
+    return dist;
+}
+
+int main(){
+    cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    int64 N,M,s,t;
+    cin >> N >> M >> s >> t;
+    s--;t--;
+    int64 a,b,c;
+    vector<vector<pair<int64,int64>>> edge(N);
+    vector<tuple<int64,int64,int64>> ABC;
+    REP(i,M){
+        cin >> a >> b >> c;
+        --a;--b;
+        ABC.emplace_back(a,b,c);
+        edge[a].emplace_back(b,c);
+        edge[b].emplace_back(a,c);
+    }   
+
+    auto dist = dijkstra(edge, s);
+
+    vector<mint> dp1(N,0),dp2(N,0);
+    dp1[s] = 1;
+    dp2[t] = 1;
     
+    vector<pair<int64,int64>> d;
+    REP(i,N) d.emplace_back(dist[i],i);
+    sort(ALL(d));
+
     REP(i,N){
-        ans +=  L/A[i];
+        int64 from,dist_from;
+        tie(dist_from, from) = d[i];
+        for(auto e:edge[from]){
+            int64 to,cost;
+            tie(to,cost) = e;
+            if(dist[to] > dist_from + cost) dp1[to] = dp1[from];
+            if(dist[to] == dist_from + cost) dp1[to] += dp1[from];
+        }
+    }
+
+    for(int i=N-1;i>=0;i--){
+        int64 from,dist_from;
+        tie(dist_from, from) = d[i];
+        for(auto e:edge[from]){
+            int64 to,cost;
+            tie(to,cost) = e;
+            if(dist[to] < dist_from - cost) dp2[to] = dp2[from];
+            if(dist[to] == dist_from - cost) dp2[to] += dp2[from];
+        }
+    }
+
+    mint ans = dp1[t]*dp1[t];
+
+    REP(i,N){
+        if(dist[t] ==  2*dist[i]) ans -= dp1[i]*dp1[i]*dp2[i]*dp2[i];
+    }
+
+    for(auto e:ABC){
+        int64 a,b,c;
+        tie(a,b,c) = e;
+        if(dist[a]>dist[b]) swap(a,b);
+        if(dist[a]+c==dist[b] and dist[a]*2<dist[t] and dist[b]*2>dist[t]){
+            ans -= dp1[a]*dp1[a]*dp2[b]*dp2[b];
+        }
     }
 
     cout << ans << endl;

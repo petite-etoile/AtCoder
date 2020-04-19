@@ -39,25 +39,38 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
-def uru(Y):
-    return (Y%4==0 and Y%100!=0) or Y%400==0
-def check(y,m,d):
-    return y%(m*d)==0
+left = 0
+right = 1
+up = 2
+down = 3
+def init(x,y,z):
+    if(z ==  left):
+        return x-1,y
+    elif(z == right):
+        return x+1,y
+    elif(z == up):
+        return x,y+1
+    elif(z == down):
+        return x,y-1
 def main():
-    Y,M,D=map(int,input().split("/"))
-    month = [0,31,28+uru(Y),31,30,31,30,31,31,30,31,30,31]
-    while 1:
-        if check(Y,M,D):
-            print(Y,str(M).zfill(2),str(D).zfill(2),sep="/")
-            return
-        D+=1
-        if D>month[M]:
-            M+=1
-            D=1
-        if M>12:
-            print(Y+1,"01","01",sep="/")
-            return
-        
-        
+    N=I()
+    S=ST()
+    now = [0,0]
+    adjacent = {}
+    opposite = { left:right, right:left, up:down, down:up }
+    for s in S:
+        s = "LRUD".index(s)
+
+        for direct in range(4):
+            if(now[0],now[1],direct) not in adjacent.keys():
+                adjacent[now[0],now[1],direct] = init(now[0],now[1],direct)
+            next_ = adjacent[now[0],now[1],direct]
+
+            if (now[0],now[1],opposite[direct]) not in adjacent.keys():
+                adjacent[now[0],now[1],opposite[direct]] = init(now[0],now[1],opposite[direct])
+            adjacent[next_[0],next_[1],opposite[direct]] = adjacent[now[0],now[1],opposite[direct]]
+
+        now = adjacent[now[0],now[1],s]
+    print(*now)
 if __name__ == '__main__':
     main()

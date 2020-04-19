@@ -39,25 +39,30 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
-def uru(Y):
-    return (Y%4==0 and Y%100!=0) or Y%400==0
-def check(y,m,d):
-    return y%(m*d)==0
 def main():
-    Y,M,D=map(int,input().split("/"))
-    month = [0,31,28+uru(Y),31,30,31,30,31,31,30,31,30,31]
-    while 1:
-        if check(Y,M,D):
-            print(Y,str(M).zfill(2),str(D).zfill(2),sep="/")
-            return
-        D+=1
-        if D>month[M]:
-            M+=1
-            D=1
-        if M>12:
-            print(Y+1,"01","01",sep="/")
-            return
-        
-        
+    Q=I()
+    q = deque()
+    for i in range(Q):
+        S=ST()
+        if(S[0]=="1"):
+            _,c,x = S.split()
+            q.append((c,int(x)))
+        else:
+            _,d = S.split()
+            d = int(d)
+            ans = defaultdict(int)
+            while(d>0 and q):
+                c,x = q.popleft()
+                sub = min(d,x)
+                d-=sub
+                x-=sub
+                ans[c]+=sub
+                if(x):
+                    q.appendleft((c,x))
+            a = 0
+            for x in ans.values():
+                a += x**2
+            print(a)
+            
 if __name__ == '__main__':
     main()

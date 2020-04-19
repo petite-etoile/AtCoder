@@ -77,20 +77,6 @@ vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 //fixed<<setprecision(10)<<ans<<endl;
 
 
-//素因数分解
-map<int64,int64> prime_factorization(int64 n){
-    int64 copy = n;
-    map<int64,int64> res;
-    for(int64 i=2;i*i<=copy;i++){
-        while(n%i==0){
-            res[i]++;
-            n/=i;
-        }
-    }
-    if(n!=1) res[n]++;
-    return res;
-}
-
 int64 pow(int a,int b,int mod){
     vector<bool> bit;
     for(b=b;b>0;b>>=1){
@@ -165,32 +151,24 @@ ostream& operator<<(ostream& os, mint a){
 int main(){
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
-    int N;
-    cin >> N;
-    vector<int64> A(N);
-    REP(i,N) cin >> A[i];
-
-    map<int64,int64> lcm;
-    vector<map<int64,int64>> prime(N);
-    int64 p,c;
-    REP(i,N){
-        auto a = A[i];
-        prime[i] = prime_factorization(a);
-        for(auto e:prime[i]){
-            tie(p,c) = e;
-            chmax(lcm[p], c);
-        }
-    }
-
-    mint ans=0;
-    mint L = 1;
-    for(auto e:lcm){
-        tie(p,c) = e;
-        L *= mint(p).pow(c);
-    }
+    int64 N,K;
+    cin >> N >> K;
+    vector<mint> cnt(K+1,0);
     
-    REP(i,N){
-        ans +=  L/A[i];
+    mint ans=0;
+    for(int64 x=K;x>=1;x--){
+        //xで割り切れる値の数
+        mint k = K/x;
+        cnt[x] = k.pow(N);
+    }
+
+    for(int64 x=K;x>=1;x--){
+        auto y = x*2;
+        while(y<=K){
+            cnt[x]-=cnt[y];
+            y+=x;
+        }
+        ans += cnt[x] * x;
     }
 
     cout << ans << endl;

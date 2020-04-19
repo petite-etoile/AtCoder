@@ -39,56 +39,20 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
-# UnionFind
-class UnionFind():
-    def __init__(self, n):
-        self.nodes=[-1] * n  # nodes[x]: 負なら、絶対値が木の要素数
-
-    def get_root(self, x):
-        # nodes[x]が負ならxが根
-        if self.nodes[x] < 0:
-            return x
-        # 根に直接つなぎ直しつつ、親を再帰的に探す
-        else:
-            self.nodes[x]=self.get_root(self.nodes[x])
-            return self.nodes[x]
-
-    def unite(self, x, y):
-        root_x=self.get_root(x)
-        root_y=self.get_root(y)
-        # 根が同じなら変わらない
-        # if root_x == root_y:
-        # pass
-        if root_x != root_y:
-            # 大きい木の方につないだほうが計算量が減る
-            if self.nodes[root_x] < self.nodes[root_y]:
-                big_root=root_x
-                small_root=root_y
-            else:
-                small_root=root_x
-                big_root=root_y
-            self.nodes[big_root] += self.nodes[small_root]
-            self.nodes[small_root]=big_root
-
-
 def main():
-    N,M=MI()
-    edge = [[] for _ in range(N)]
-    
-    uf=UnionFind(N)
-    get_root, unite, nodes=uf.get_root, uf.unite, uf.nodes
-    
-    for i in range(M):
-        a,b = MI_()
-        edge[a].append(b)
-        unite(a,b)
-    cnt = [0]*N
-    for i in range(N):
-        cnt[get_root(i)] += len(edge[i])
+    N=I()
+    AB=LLIN(N)
+    q = []
+    d = defaultdict(list)
+    for a,b in AB:
+        d[a-1].append(-b)
     ans = 0
     for i in range(N):
-        if(nodes[i] < 0):
-            ans +=  (cnt[i] == -nodes[i] -1)
-    print(ans)
+        for b in d[i]:
+            heappush(q,b)
+        if(q):
+            ans += heappop(q)
+        print(-ans)
+    
 if __name__ == '__main__':
     main()
