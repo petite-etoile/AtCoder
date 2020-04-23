@@ -12,7 +12,7 @@
 import sys
 sys.setrecursionlimit(10**6)
 input=sys.stdin.readline
-from math import floor,sqrt,factorial,hypot,log #log2ないｙｐ
+from math import floor,sqrt,factorial,hypot,log,pi #log2ないｙｐ
 from heapq import heappop, heappush, heappushpop
 from collections import Counter,defaultdict,deque
 from itertools import accumulate,permutations,combinations,product,combinations_with_replacement
@@ -40,22 +40,7 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,M=MI()
-    edge = [[] for _ in range(N)]
-    for i in range(M):
-        a,b = MI_()
-        edge[a].append(b)
-        edge[b].append(a)
-    for i in range(N):
-        friend = set(edge[i])
-        ans = set()
-        for from_ in friend:
-            for to in edge[from_]:
-                if(to in friend or to == i):
-                    continue
-                ans.add(to)
-        print(len(ans))
-
-
+    R=I()
+    print(pi*R*2)
 if __name__ == '__main__':
     main()

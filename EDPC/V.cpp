@@ -154,7 +154,6 @@ int64 dfs(int v, int pre){
 }
 
 void dfs_with_rerooting(int v, int pre, int64 pre_val){
-    debug(mp(v, mp(pre,pre_val)))
     for(auto to:edge[v]){
         if(to==pre) ans[v] *= pre_val+1;
         else ans[v] *= dp[to]+1;

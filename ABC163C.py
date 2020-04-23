@@ -40,22 +40,11 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    N,M=MI()
-    edge = [[] for _ in range(N)]
-    for i in range(M):
-        a,b = MI_()
-        edge[a].append(b)
-        edge[b].append(a)
-    for i in range(N):
-        friend = set(edge[i])
-        ans = set()
-        for from_ in friend:
-            for to in edge[from_]:
-                if(to in friend or to == i):
-                    continue
-                ans.add(to)
-        print(len(ans))
-
-
+    N=I()
+    A=LI()
+    ans = [0]*N
+    for a in A:
+        ans[a-1]+=1
+    print(*ans,sep="\n")
 if __name__ == '__main__':
     main()

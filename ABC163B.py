@@ -41,21 +41,11 @@ def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
     N,M=MI()
-    edge = [[] for _ in range(N)]
-    for i in range(M):
-        a,b = MI_()
-        edge[a].append(b)
-        edge[b].append(a)
-    for i in range(N):
-        friend = set(edge[i])
-        ans = set()
-        for from_ in friend:
-            for to in edge[from_]:
-                if(to in friend or to == i):
-                    continue
-                ans.add(to)
-        print(len(ans))
-
+    A=sum(LI())
+    if(A>N):
+        print(-1)
+    else:
+        print(N-A)
 
 if __name__ == '__main__':
     main()
