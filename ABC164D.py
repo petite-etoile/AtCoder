@@ -40,17 +40,13 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    X=I()
-    for A in range(-10**5,10**5):
-        B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
-            return
-        B = int(pow(abs(B_),-5))
-        if(B_<0):
-            B *= -1
-        if(B**5==B_):
-            print(A,B)
-            return
+    S=ST()
+    N=len(S)
+    now = 0
+    for i in range(N)[::-1]:
+        # print(S[i])
+        now += (10**(N-i-1))*int(S[i])
+        now %= 2019
+        print(now)
 if __name__ == '__main__':
     main()

@@ -40,17 +40,34 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    X=I()
-    for A in range(-10**5,10**5):
-        B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
+    N,A,B,C=MI()
+    D = { "A":A,"B":B,"C":C }
+    ans = []
+    S=[ST() for _ in range(N)]
+    for i,s in enumerate(S):
+        if(D[s[0]]==D[s[1]]==0):
+            print("No")
             return
-        B = int(pow(abs(B_),-5))
-        if(B_<0):
-            B *= -1
-        if(B**5==B_):
-            print(A,B)
-            return
+        if(D[s[0]]<D[s[1]]):
+            ans.append(s[0])
+            D[s[0]]+=1
+            D[s[1]]-=1
+        elif(D[s[0]]>D[s[1]] or i==N-1):
+            ans.append(s[1])
+            D[s[0]]-=1
+            D[s[1]]+=1
+        else:
+            ns = S[i+1]
+            if(s[0] in ns):
+                ans.append(s[0])
+                D[s[0]]+=1
+                D[s[1]]-=1
+            else:
+                ans.append(s[1])
+                D[s[0]]-=1
+                D[s[1]]+=1
+
+    print("Yes")
+    print(*ans,sep="\n")
 if __name__ == '__main__':
     main()

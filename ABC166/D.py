@@ -43,9 +43,7 @@ def main():
     X=I()
     for A in range(-10**5,10**5):
         B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
-            return
+
         B = int(pow(abs(B_),-5))
         if(B_<0):
             B *= -1

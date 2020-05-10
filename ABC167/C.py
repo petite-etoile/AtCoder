@@ -40,17 +40,38 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    X=I()
-    for A in range(-10**5,10**5):
-        B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
-            return
-        B = int(pow(abs(B_),-5))
-        if(B_<0):
-            B *= -1
-        if(B**5==B_):
-            print(A,B)
-            return
+    N,M,X=MI()
+    A=[[] for _ in range(N)]
+    C=[0]*N
+    for i in range(N):
+        c,*a = MI()
+        A[i] = a
+        C[i] = c
+
+    def f(mask):
+        B = [0]*M
+        cost = 0
+
+        for i in range(N):
+            if mask >> i & 1:
+                cost += C[i]
+                for j,a in enumerate(A[i]):
+                    B[j] += a
+
+        ok = True
+        for b in B:
+            if(b<X):
+                ok = False
+        return ok,cost
+
+    ans = inf
+    for mask in range(1<<N):
+        ok,cost = f(mask)
+        if(ok):
+            ans = min(ans, cost)
+    if(ans == inf):
+        print(-1)
+    else:
+        print(ans)
 if __name__ == '__main__':
     main()

@@ -73,59 +73,45 @@ ostream& operator<<(ostream& os, map<T,S> const&M){
 }
 vector<pair<int,int>> dxdy = {mp(0,1),mp(1,0),mp(-1,0),mp(0,-1)};
 #pragma endregion
+//fixed<<setprecision(10)<<ans<<endl;
 
-typedef long double ld;
-const ld eps = 5e-7;
-vector<pair<ld,ld>> XY;
-ld g(ld x, ld y){
-    ld res = 0;
-    for(auto e:XY){
-        chmax(res, hypot(e.first-x, e.second-y));
-    }
-    return res;
-}
 
-//xが決められた時、yの位置を三分探索で決め、そのときの半径を返す
-ld f(ld x){
-    ld up = 0, bot = 1000;
-    ld up_val = g(x,up), bot_val = g(x,bot);
-    REP(i,100){
-    // while(abs(up_val-bot_val) > eps){
-        ld mu = (up*2 + bot) / 3, mb = (up + bot*2) / 3;
-        ld mu_val = g(x,mu), mb_val = g(x,mb);
-
-        if(mu_val < mb_val) bot = mb, bot_val = mb_val;
-        else up = mu, up_val = mu_val;
-
-    }
-    return up_val;
-}
-
-//xの位置を三分探索で決める
-ld TsearchX(){
-    ld left = 0, right = 1000;
-    ld left_val = f(left), right_val = f(right);
-    REP(i,100){
-    // while(abs(left_val-right_val) > eps){
-        ld ml = (left*2+right)/3, mr = (left+right*2)/3;
-        ld ml_val = f(ml), mr_val = f(mr);
-
-        if(ml_val < mr_val) right = mr, right_val = mr_val;
-        else left = ml, left_val = ml_val;
-    }
-    return left_val;
-}
 
 int main(){
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
-    int N; cin >> N;
-    REP(i,N){
-        ld x,y; cin >> x >> y;
-        XY.emplace_back(x,y);
+    string S; cin >> S;
+    int N = S.size();
+
+    vector<vector<int>> next(N);
+    vector<int> last(26,N);
+    for(int i=N-1;i>=0;i--){
+        last[S[i]-'a'] = i;
+        next[i] = last;
     }
 
-    auto ans = TsearchX();
-
-    cout<<fixed<<setprecision(10)<<ans<<endl;
+    vector<int> DP(N+1,N); //DP[i]:=i文字目以降で「部分文字列」にならない最短の文字列
+    vector<int> memo(N+1,0);
+    DP[N] = 1;
+    for(int i=N-1;i>=0;i--){
+        REP(c,26){
+            int to = next[i][c];
+            if(to==N){
+                memo[i] = c;
+                DP[i] = 1;
+                break;
+            }
+            if(chmin(DP[i],DP[to+1]+1)){
+                memo[i] = c;
+            }
+        }
+    }
+    
+    string ans = "";
+    for(int now=0; now<N ;){
+        int next_char = memo[now];
+        ans += next_char + 'a';
+        now = next[now][next_char]+1;
+    }
+    cout << ans << bn;
 }

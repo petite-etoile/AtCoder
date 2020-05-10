@@ -40,17 +40,15 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    X=I()
-    for A in range(-10**5,10**5):
-        B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
-            return
-        B = int(pow(abs(B_),-5))
-        if(B_<0):
-            B *= -1
-        if(B**5==B_):
-            print(A,B)
-            return
+    N=I()
+    A=LI()
+    d=defaultdict(int)
+    ans = 0
+    for i,a in enumerate(A):
+        i+=1
+        x = i-a
+        ans += d[x]
+        d[a+i] += 1
+    print(ans)
 if __name__ == '__main__':
     main()

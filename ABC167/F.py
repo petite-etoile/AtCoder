@@ -39,18 +39,56 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
+def f(S):
+    worst = 0
+    res = 0
+    for s in S:
+        if(s=='('):
+            res += 1
+        else:
+            res -= 1
+        worst = min(worst, res)
+    return worst, res
 def main():
-    X=I()
-    for A in range(-10**5,10**5):
-        B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
+    N=I()
+    S=[ST() for _ in range(N)]
+    
+    AB_nega=[]
+    AB_nonnega=[]
+    for i in range(N):
+        a,b = f(S[i])
+        if b<0:
+            AB_nega.append((a,b))
+        else:
+            AB_nonnega.append((a,b))
+    
+    AB_nega.sort(key=lambda x:-x[0]+x[1], reverse =True)
+    AB_nonnega.sort(reverse = True)
+
+    # print(AB_nega)
+    # print(AB_nonnega)
+
+    now = 0
+    for a,b in AB_nonnega:
+        if(now+a < 0):
+            print("No")
             return
-        B = int(pow(abs(B_),-5))
-        if(B_<0):
-            B *= -1
-        if(B**5==B_):
-            print(A,B)
+        now += b
+        # print(now,"#######")
+    
+    
+    for a,b in AB_nega:
+        if(now+a<0):
+            print("No")
             return
+        now += b
+        # print(now,"#########")
+    if now == 0:
+        print('Yes')
+    else:
+        print("No")
+
+
+    
 if __name__ == '__main__':
     main()

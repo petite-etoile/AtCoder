@@ -39,18 +39,30 @@ def LLI(): return [list(map(int, l.split() )) for l in input()]
 def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
+# 約数列挙
+def find_divisor(n):
+    divisors=[]
+    for i in range(1, int(sqrt(n)) + 1):
+        if n % i == 0:
+            divisors.append(i)
+            if i*i!=n:
+                divisors.append(n // i)
+    return divisors
+
+
 def main():
     X=I()
-    for A in range(-10**5,10**5):
-        B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
-            return
-        B = int(pow(abs(B_),-5))
-        if(B_<0):
-            B *= -1
-        if(B**5==B_):
-            print(A,B)
-            return
+    S=set()
+    for i in range(10**5):
+        S.add(i**5)
+        S.add(-i**5)
+    for s in S:
+        if(X-s in S):
+            B=int((X-s)**(1/5))
+            A=int(s**(1/5))
+            print(A,-B)
+            break
+
 if __name__ == '__main__':
     main()
+

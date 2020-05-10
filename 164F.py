@@ -40,17 +40,26 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    X=I()
-    for A in range(-10**5,10**5):
-        B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
-            return
-        B = int(pow(abs(B_),-5))
-        if(B_<0):
-            B *= -1
-        if(B**5==B_):
-            print(A,B)
-            return
+    N=I()
+    S=LI()
+    T=LI()
+    U=LI()
+    V=LI()
+    ans = [[0]*N for _ in range(N)]
+    for i in range(N):
+        for j in range(N):
+            for k in range(64):
+                if(S[i]==0):
+                    if(U[i]>>k&1):
+                        ans[i][j] |= 1<<k
+                else:
+                    if(T[i]==0):
+                        if((V[j]<<k)&(U[i]<<k)):
+                            pass
+                        else:
+                            ans[i][j] |= 1<<k
+                    else:
+
+                    
 if __name__ == '__main__':
     main()

@@ -40,17 +40,18 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    X=I()
-    for A in range(-10**5,10**5):
-        B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
-            return
-        B = int(pow(abs(B_),-5))
-        if(B_<0):
-            B *= -1
-        if(B**5==B_):
-            print(A,B)
-            return
+    N,M=MI()
+    if(N&1):
+        N+=1
+        for i in range(M):
+            print(i+1+1,N-i-2+1)
+    else:
+        used = set()
+        for i in range(1,M+1):
+            if(i<=N/4):
+                print(i,N-i+1)
+            else:
+                print(i,N-i)
+
 if __name__ == '__main__':
     main()

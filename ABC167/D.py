@@ -40,17 +40,25 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    X=I()
-    for A in range(-10**5,10**5):
-        B_=pow(A,5)-X
-        if(B_==0):
-            print(A,B_)
-            return
-        B = int(pow(abs(B_),-5))
-        if(B_<0):
-            B *= -1
-        if(B**5==B_):
-            print(A,B)
-            return
+    N,K=MI()
+    A=LI_()
+    dist = [inf]*N
+
+    now = 0
+    start = 0
+    for i in range(N+2):
+        if(dist[now] != inf):
+            cycle = i - dist[now]
+            if(K>=dist[now]):
+                K-=dist[now] ##出発点をnowにする
+                start = now
+                K%=cycle
+            break
+        dist[now] = i
+        now = A[now]
+    for i in range(K):
+        start = A[start]
+    print(start+1)
+
 if __name__ == '__main__':
     main()
