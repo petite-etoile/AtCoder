@@ -40,6 +40,14 @@ def I(): return int(input())
 def F(): return float(input())
 def ST(): return input().replace('\n', '')
 def main():
-    
+    Q,H,S,D = MI()
+    N = I()
+    if(Q*2<H):
+        H=2*Q
+    if(H*2<S):
+        S=H*2
+    if(S*2<D):
+        D=S*2
+    print(N//2*D + ((N&1)*S))
 if __name__ == '__main__':
     main()

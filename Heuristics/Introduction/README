@@ -1,0 +1,31 @@
+用語定義
+replace_contest:とあるスケジュールに対して,i日目のコンテストをqに変更する(近傍解)
+swap_date:とあるスケジュールに対して,i日目のコンテストとj日目のコンテストを入れ替える(近傍解)
+
+
+A.cpp:局所探索 (replace_contest) 
+            
+
+A_v2.cpp:局所探索 (replace_contest & swap_date)
+    https://atcoder.jp/contests/intro-heuristics/submissions/14929188
+    score:117819025
+
+A_AS.cpp:アニーリング (replace_contest) 
+    https://atcoder.jp/contests/intro-heuristics/submissions/14929770?lang=ja 
+    score:117936260
+
+A_AS_v2.cpp:アニーリング (replace_contest & swap_date)
+    https://atcoder.jp/contests/intro-heuristics/submissions/14929701
+    score:122066247
+
+
+B.cpp:B問題用 
+    https://atcoder.jp/contests/intro-heuristics/submissions/14811397
+
+C.cpp:C問題用
+    https://atcoder.jp/contests/intro-heuristics/submissions/14815224
+
+
+
+乱数生成として使ったxor128関数に関して参考にしたサイト
+    http://hexadrive.sblo.jp/article/63660775.html
